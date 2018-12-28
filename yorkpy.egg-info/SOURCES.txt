@@ -1,0 +1,8 @@
+README.md
+setup.py
+yorkpy/__init__.py
+yorkpy/analytics.py
+yorkpy.egg-info/PKG-INFO
+yorkpy.egg-info/SOURCES.txt
+yorkpy.egg-info/dependency_links.txt
+yorkpy.egg-info/top_level.txt
