@@ -423,7 +423,7 @@ def getFours(df):
     
 def getSixes(df):
     df1=df[['batsman','runs','extras','total','non_boundary']]
-    df2= df1.loc[(df1.batsman ==6)]
+    df2= df1.loc[(df1.runs ==6)]
     sixes= df2[['batsman','runs']].groupby('batsman',sort=False,as_index=False).count()
     sixes.columns=['batsman','6s']
     return(sixes)
@@ -1450,7 +1450,7 @@ def teamBatsmenPartnershipOppnAllMatchesChart(matches,main,opposition,plot=True,
     if plot == True:
        df9.plot(kind='bar',stacked=True,legend=False,fontsize=8)
        plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5),fontsize=8)
-       plt.title('Partnership runs between ' + main + '-' + opposition)
+       plt.title('Partnership runs bby batsmen of  ' + main + ' against ' + opposition)
        plt.xlabel('Batsman')
        plt.ylabel('Partnership runs')   
        plt.show()
@@ -1536,7 +1536,7 @@ def teamBatsmenVsBowlersOppnAllMatches(matches,main,opposition,plot=True,top=5,r
     if plot == True:
         ax=df9.plot(kind='bar',stacked=False,legend=False,fontsize=8)
         plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5),fontsize=8)
-        plt.title('Runs against bowlers ' + main + '-' + opposition)
+        plt.title('Runs by batsmen of  ' + main + ' against bowler of ' + opposition)
         plt.xlabel('Batsman')
         plt.ylabel('Runs scored') 
         plt.show()
@@ -1764,7 +1764,7 @@ def teamBowlingWicketKindOppositionAllMatches(matches,main,opposition,plot=True,
     if plot == True:
         ax=df9.plot(kind='bar',stacked=False,legend=False,fontsize=8)
         plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5),fontsize=8)
-        plt.title('Wicker kind by bowlers of ' + main + '-' + opposition)
+        plt.title('Wicker kind by bowlers of ' + main + ' against ' + opposition)
         plt.xlabel('Bowler')
         plt.ylabel('Total wickets') 
         plt.show()
@@ -1854,7 +1854,7 @@ def teamBowlersVsBatsmenOppnAllMatches(matches,main,opposition,plot=True,top=5,r
     if plot == True:
         ax=df9.plot(kind='bar',stacked=False,legend=False,fontsize=8)
         plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5),fontsize=8)
-        plt.title('Wicker kind by bowlers of ' + main + '-' + opposition)
+        plt.title('Performance of  bowlers of ' + main + ' against ' + opposition)
         plt.xlabel('Bowler')
         plt.ylabel('Total runs') 
         plt.show()

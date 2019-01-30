@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: yorkpy
-Version: 0.0.2
+Version: 0.0.3
 Summary: Analyze IPL T20 matches based on data from Cricsheet-http://cricsheet.org
 Home-page: https://github.com/tvganesh/yorkpy
 Author: Tinniam V Ganesh
