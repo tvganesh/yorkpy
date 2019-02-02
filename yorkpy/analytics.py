@@ -1450,7 +1450,7 @@ def teamBatsmenPartnershipOppnAllMatchesChart(matches,main,opposition,plot=True,
     if plot == True:
        df9.plot(kind='bar',stacked=True,legend=False,fontsize=8)
        plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5),fontsize=8)
-       plt.title('Partnership runs bby batsmen of  ' + main + ' against ' + opposition)
+       plt.title('Partnership runs between ' + main + '-' + opposition)
        plt.xlabel('Batsman')
        plt.ylabel('Partnership runs')   
        plt.show()
@@ -1536,7 +1536,7 @@ def teamBatsmenVsBowlersOppnAllMatches(matches,main,opposition,plot=True,top=5,r
     if plot == True:
         ax=df9.plot(kind='bar',stacked=False,legend=False,fontsize=8)
         plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5),fontsize=8)
-        plt.title('Runs by batsmen of  ' + main + ' against bowler of ' + opposition)
+        plt.title('Runs against bowlers ' + main + '-' + opposition)
         plt.xlabel('Batsman')
         plt.ylabel('Runs scored') 
         plt.show()
@@ -1764,7 +1764,7 @@ def teamBowlingWicketKindOppositionAllMatches(matches,main,opposition,plot=True,
     if plot == True:
         ax=df9.plot(kind='bar',stacked=False,legend=False,fontsize=8)
         plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5),fontsize=8)
-        plt.title('Wicker kind by bowlers of ' + main + ' against ' + opposition)
+        plt.title('Wicker kind by bowlers of ' + main + '-' + opposition)
         plt.xlabel('Bowler')
         plt.ylabel('Total wickets') 
         plt.show()
@@ -1854,7 +1854,7 @@ def teamBowlersVsBatsmenOppnAllMatches(matches,main,opposition,plot=True,top=5,r
     if plot == True:
         ax=df9.plot(kind='bar',stacked=False,legend=False,fontsize=8)
         plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5),fontsize=8)
-        plt.title('Performance of  bowlers of ' + main + ' against ' + opposition)
+        plt.title('Wicker kind by bowlers of ' + main + '-' + opposition)
         plt.xlabel('Bowler')
         plt.ylabel('Total runs') 
         plt.show()
@@ -2050,3 +2050,833 @@ def plotWinsbyTossDecision(matches,team1,tossDecision='bat'):
     plt.show()
     plt.gcf().clear()
     return
+
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 1 Feb 2019
+# Function: getAllMatchesAllOpposition
+# This function gets all the matches between a IPL team and all opposition
+#
+########################################################################################### 
+def getAllMatchesAllOpposition(team1,dir=".",save=False):
+    '''
+    Get data on all matches against all opposition
+    
+    Description
+    
+    This function gets all the matches for a particular IPL team for
+    against all other oppositions.  It constructs a huge dataframe of 
+    all these matches. This can be saved by the user which can be used in 
+    function in which analyses are done for all matches and for all oppositions. 
+
+    
+    Usage
+    
+    getAllMatchesAllOpposition(team,dir=".",save=FALSE)
+    Arguments
+    
+    team	
+    The team for which all matches and all opposition has to be obtained e.g. India, Pakistan
+    dir	
+    The directory in which the saved .RData files exist
+    save	
+    Default=False. This parameter indicates whether the combined data frame needs to be saved or not. It is recommended to save this large dataframe as the creation of this data frame takes a several seconds depending on the number of matches
+    Value
+    
+    match The combined data frame
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+
+    
+    See Also
+    
+    saveAllMatchesAllOppositionIPLT20
+    teamBatsmenPartnershiAllOppnAllMatches  
+    '''
+
+    # Create the 2 combinations
+    t1 = '*' +  team1 +'*.csv'
+    path= os.path.join(dir1,t1)
+
+    
+    files = glob.glob(path) 
+    print(len(files))
+    # Save as CSV only if there are matches between the 2 teams
+    if len(files) !=0:
+        df = pd.DataFrame()
+        for file in files:
+            df1 = pd.read_csv(file)
+            df=pd.concat([df,df1])    
+        if save==True:
+            dest= team1 + '-allMatchesAllOpposition.csv'    
+            df.to_csv(dest)
+        else:
+           return(df)
+           
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 1 Feb 2019
+# Function: saveAllMatchesAllOppositionIPLT20
+# This function saves all the matches between all IPL team and all opposition
+#
+########################################################################################### 
+def saveAllMatchesAllOppositionIPLT20(dir1):  
+    '''
+    Saves matches against all IPL teams as dataframe and CSV for an IPL team
+    
+    Description
+    
+    This function saves all IPL matches agaist all opposition as a single 
+    dataframe in the current directory
+    
+    Usage
+    
+    saveAllMatchesAllOppositionIPLT20(dir)
+    Arguments
+    
+    dir	
+    Directory to store saved matches
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+
+    
+    See Also
+    
+    convertYaml2PandasDataframeT20
+    teamBattingScorecardMatch 
+    '''
+    teams = ["Chennai Super Kings","Deccan Chargers","Delhi Daredevils",
+                  "Kings XI Punjab", 'Kochi Tuskers Kerala',"Kolkata Knight Riders",
+                  "Mumbai Indians", "Pune Warriors","Rajasthan Royals",
+                  "Royal Challengers Bangalore","Sunrisers Hyderabad","Gujarat Lions",
+                  "Rising Pune Supergiants"]
+    
+    for team in teams:
+                print("Team=",team)
+                getAllMatchesAllOpposition(team,dir=dir1,save=True)
+                time.sleep(2) #Sleep before  next save
+                
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 1 Feb 2019
+# Function: teamBatsmenPartnershiAllOppnAllMatches
+# This function computes the partnerships of an IPK team against all other IPL teams
+#
+########################################################################################### 
+def teamBatsmenPartnershiAllOppnAllMatches(matches,theTeam,report="summary",top=5):
+    '''
+    Team batting partnership against a opposition all IPL matches
+    
+    Description
+    
+    This function computes the performance of batsmen against all bowlers of an oppositions in 
+    all matches. This function returns a dataframe
+    
+    Usage
+    
+    teamBatsmenPartnershiAllOppnAllMatches(matches,theTeam,report="summary")
+    Arguments
+    
+    matches	
+    All the matches of the team against the oppositions
+    theTeam	
+    The team for which the the batting partnerships are sought
+    report	
+    If the report="summary" then the list of top batsmen with the highest partnerships 
+    is displayed. If report="detailed" then the detailed break up of partnership is returned 
+    as a dataframe
+    top
+    The number of players to be displayed from the top
+    Value
+    
+    partnerships The data frame of the partnerships
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+    
+    See Also
+    
+    teamBatsmenVsBowlersOppnAllMatchesPlot
+    teamBatsmenPartnershipOppnAllMatchesChart
+    '''
+    df1 = matches[matches.team == theTeam]
+    df2 = df1[['batsman','non_striker','runs']]
+    
+    # Compute partnerships
+    df3=df2.groupby(['batsman','non_striker']).sum().reset_index(inplace=False)
+    df3.columns = ['batsman','non_striker','partnershipRuns']
+    
+    # Compute total partnerships
+    df4 = df3.groupby('batsman').sum().reset_index(inplace=False).sort_values('partnershipRuns',ascending=False)
+    df4.columns = ['batsman','totalPartnershipRuns']
+    
+    # Select top 5
+    df5 = df4.head(top)    
+    df6= pd.merge(df5,df3,on='batsman')
+    
+    if report == 'summary':
+       return(df5)
+    elif report == 'detailed':
+       return(df6)
+    else:
+         print("Invalid option")
+         
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 1 Feb 2019
+# Function: teamBatsmenPartnershipAllOppnAllMatchesChart
+# This function computes and plots the partnerships of an IPK team against all other IPL teams
+#
+########################################################################################### 
+def teamBatsmenPartnershipAllOppnAllMatchesChart(matches,main,plot=True,top=5,partnershipRuns=20):
+    '''
+    Plots team batting partnership all matches all oppositions
+    
+    Description
+    
+    This function plots the batting partnership of a team againt all oppositions in all matches This function also returns a dataframe with the batting partnerships
+    
+    Usage
+    
+    teamBatsmenPartnershipAllOppnAllMatchesChart(matches,theTeam,main,plot=True,top=5,partnershipRuns=20)
+    Arguments
+    
+    matches	
+    All the matches of the team against all oppositions
+    theTeam	
+    The team for which the the batting partnerships are sought
+    main	
+    The main team for which the the batting partnerships are sought
+    plot	
+    Whether the partnerships have top be rendered as a plot. If plot=FALSE the data frame is returned
+    
+    top
+    The number of players from the top to be included in chart
+    partnershipRuns
+    The minimum number of partnership runs to include for the chart
+    Value
+    
+    None or partnerships
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+   
+    '''
+    df1 = matches[matches.team == main]
+    df2 = df1[['batsman','non_striker','runs']]
+    
+    # Compute partnerships
+    df3=df2.groupby(['batsman','non_striker']).sum().reset_index(inplace=False)
+    df3.columns = ['batsman','non_striker','partnershipRuns']
+    
+    # Compute total partnerships
+    df4 = df3.groupby('batsman').sum().reset_index(inplace=False).sort_values('partnershipRuns',ascending=False)
+    df4.columns = ['batsman','totalPartnershipRuns']
+    
+    
+    # Select top 5
+    df5 = df4.head(top)    
+    df6= pd.merge(df5,df3,on='batsman')
+    df7 = df6[['batsman','non_striker','partnershipRuns']]
+ 
+    # Remove rows where partnershipRuns < partnershipRuns as there are too many
+    df8 = df7[df7['partnershipRuns'] > partnershipRuns]
+    
+    df9=df8.groupby(['batsman','non_striker'])['partnershipRuns'].sum().unstack(fill_value=0)
+    # Note: Can also use the below code -*************
+    #df8=df7.pivot(columns='non_striker',index='batsman').fillna(0)
+ 
+
+    if plot == True:
+       df9.plot(kind='bar',stacked=True,legend=False,fontsize=8)
+       plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5),fontsize=8)
+       plt.title('Batting partnerships  of' + main + 'against all teams')
+       plt.xlabel('Batsman')
+       plt.ylabel('Partnership runs')   
+       plt.show()
+       plt.gcf().clear()
+    else:
+        return(df7)
+
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 1 Feb 2019
+# Function: teamBatsmenVsBowlersAllOppnAllMatches
+# This function computes and plots the performance of batsmen
+# of an IPL team against all other teams
+#
+########################################################################################### 
+def teamBatsmenVsBowlersAllOppnAllMatches(matches,main,plot=True,top=5,runsScored=20):
+    '''
+    Report of team batsmen vs bowlers in all matches all oppositions
+
+    Description
+    
+    This function computes the performance of batsmen against all bowlers of all oppositions in all matches
+    
+    Usage
+    
+    teamBatsmenVsBowlersAllOppnAllMatches(matches,main,plot=True,top=5,runsScored=20)
+    Arguments
+    
+    matches	
+    All the matches of the team against all oppositions
+    main
+    The team for which the the batting partnerships are sought
+    plot	
+    Whether a plot is required or not
+    top
+    The number of top batsmen to be included
+    runsScored
+    The total runs scoed by batsmen
+    Value
+    
+    The data frame of the batsman and the runs against bowlers
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+
+    '''
+
+    df1 = matches[matches.team == main]
+    df2 = df1[['batsman','bowler','runs']]
+    
+    # Runs scored by bowler
+    df3=df2.groupby(['batsman','bowler']).sum().reset_index(inplace=False)
+    df3.columns = ['batsman','bowler','runsScored']
+    print(df3.shape)
+    # Need to pick the 'top' number of bowlers
+    df4 = df3.groupby('batsman').sum().reset_index(inplace=False).sort_values('runsScored',ascending=False)
+    print(df4.shape)
+    df4.columns = ['batsman','totalRunsScored']
+    df5 = df4.head(top)
+    df6= pd.merge(df5,df3,on='batsman')
+    df7 = df6[['batsman','bowler','runsScored']]
+    
+    # Remove rows where runsScored < runsScored as there are too many
+    df8 = df7[df7['runsScored'] >runsScored]
+    df9=df8.groupby(['batsman','bowler'])['runsScored'].sum().unstack().fillna(0)
+    # Note: Can also use the below code -*************
+    #df8=df7.pivot(columns='bowler',index='batsman').fillna(0)
+    
+    if plot == True:
+        ax=df9.plot(kind='bar',stacked=False,legend=False,fontsize=8)
+        plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5),fontsize=8)
+        #ax.legend(fontsize=25)
+        plt.title('Runs by ' + main + ' against all bowlers in IPL')
+        plt.xlabel('Batsman')
+        plt.ylabel('Runs scored') 
+        plt.show()
+        plt.gcf().clear()
+    else:
+        return(df7)
+        
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 1 Feb 2019
+# Function: teamBattingScorecardAllOppnAllMatches
+# This function computes and batting scorecard of an IPL team against all other 
+# IPL teams
+#
+########################################################################################### 
+        
+def teamBattingScorecardAllOppnAllMatches(matches,main):
+    '''
+    Team batting scorecard against all oppositions in all matches
+    
+    Description
+    
+    This function omputes and returns the batting scorecard of a team in all matches against all oppositions. The data frame has the ball played, 4's,6's and runs scored by batsman
+    
+    Usage
+    
+    teamBattingScorecardAllOppnAllMatches(matches,theTeam)
+    Arguments
+    
+    matches	
+    All matches of the team in all matches with all oppositions
+    main	
+    The team for which the the batting partnerships are sought
+    Value
+    
+    details The data frame of the scorecard of the team in all matches against all oppositions
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/    
+    '''
+    team=matches.loc[matches.team== main]
+    a1= getRuns(team)
+    b1= getFours(team)
+    c1= getSixes(team)
+    
+    # Merge columns
+    d1=pd.merge(a1, b1, how='outer', on='batsman')
+    e=pd.merge(d1,c1,how='outer', on='batsman')
+    e=e.fillna(0)
+    
+    e['4s']=e['4s'].astype(int)
+    e['6s']=e['6s'].astype(int)
+    e['SR']=(e['runs']/e['balls']) *100
+    scorecard = e[['batsman','runs','balls','4s','6s','SR']].sort_values('runs',ascending=False)
+    return(scorecard)
+    
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 1 Feb 2019
+# Function: teamBowlingScorecardAllOppnAllMatches
+# This function computes and bowling scorecard of an IPL team against all other 
+# IPL teams
+#
+###########################################################################################
+def teamBowlingScorecardAllOppnAllMatches(matches,main):
+    '''
+    Team bowling scorecard all opposition all matches
+
+    Description
+    
+    This function computes returns the bowling dataframe of bowlers deliveries,
+    maidens, overs, wickets against all oppositions in all matches
+    
+    Usage
+    
+    teamBowlingScorecardAllOppnAllMatches(matches,theTeam)
+    Arguments
+    
+    matches	
+    The matches of the team against all oppositions and all matches
+    theTeam	
+    Team for which bowling performance is required
+    Value
+    
+    l A data frame with the bowling performance in alll matches against all oppositions
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+    '''
+    team=matches.loc[matches.team== main] 
+    # Compute overs bowled
+    a1= getOvers(team).reset_index(inplace=False)
+    # Compute runs conceded
+    b1= getRunsConceded(team).reset_index(inplace=False)   
+    # Compute maidens
+    c1= getMaidens(team).reset_index(inplace=False)   
+    # Compute wickets
+    d1= getWickets(team).reset_index(inplace=False)
+    e1=pd.merge(a1, b1, how='outer', on='bowler')
+    f1= pd.merge(e1,c1,how='outer', on='bowler')
+    g1= pd.merge(f1,d1,how='outer', on='bowler')
+    g1 = g1.fillna(0)
+    # Compute economy rate
+    g1['econrate'] = g1['runs']/g1['overs']
+    g1.columns=['bowler','overs','runs','maidens','wicket','econrate']
+    g1.maidens = g1.maidens.astype(int)
+    g1.wicket = g1.wicket.astype(int)
+    g2 = g1.sort_values('wicket',ascending=False)
+    return(g2)
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 1 Feb 2019
+# Function: teamBowlingWicketKindAllOppnAllMatches
+# This function computes and plots the wicket kind of an IPL team against all other 
+# IPL teams
+#
+###########################################################################################
+def teamBowlingWicketKindAllOppnAllMatches(matches,main,plot=True,top=5,wickets=2):
+    df1=matches.loc[matches.team== main]
+    df2= df1[['bowler','kind','player_out']]
+
+    # Find all rows where there was a wicket
+    df2=df2[df2.player_out != '0']
+    
+    # Number of wickets taken by bowler
+    df3=df2.groupby(['bowler','kind']).count().reset_index(inplace=False)
+    df3.columns = ['bowler','kind','wickets']
+    
+    # Need to pick the 'top' number of bowlers by wickets
+    df4 = df3.groupby('bowler').sum().reset_index(inplace=False).sort_values('wickets',ascending=False)
+    df4.columns = ['bowler','totalWickets']
+    df5 = df4.head(top)
+    df6= pd.merge(df5,df3,on='bowler')
+    df7 = df6[['bowler','kind','wickets']]
+    
+    
+    # Remove rows where runsScored < runsScored as there are too many
+    df8 = df7[df7['wickets'] >wickets]
+    df9=df8.groupby(['bowler','kind'])['wickets'].sum().unstack().fillna(0)   
+    # Note: Can also use the below code -*************
+    #df9=df8.pivot(columns='bowler',index='batsman').fillna(0)
+
+    if plot == True:
+        ax=df9.plot(kind='bar',stacked=False,legend=False,fontsize=8)
+        plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5),fontsize=8)
+        plt.title('Wicker kind by bowlers of ' + main + ' against all IPL teams')
+        plt.xlabel('Bowler')
+        plt.ylabel('Total wickets') 
+        plt.show()
+        plt.gcf().clear()
+    else:
+        return(df7)
+
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 1 Feb 2019
+# Function: teamBowlersVsBatsmenAllOppnAllMatches
+# This function computes and plots the performance of bowlers of an IPL team against all other 
+# IPL teams
+#
+###########################################################################################
+def teamBowlersVsBatsmenAllOppnAllMatches(matches,main,plot=True,top=5,runsConceded=10):
+    '''
+    Compute team bowlers vs batsmen all opposition all matches
+    
+    Description
+    
+    This function computes performance of bowlers of a team against all opposition in all matches
+    
+    Usage
+    
+    teamBowlersVsBatsmenAllOppnAllMatches(matches,,main,plot=True,top=5,runsConceded=10)
+    Arguments
+    
+    matches	
+    the data frame of all matches between a team and aall opposition and all obtained with the call getAllMatchesAllOpposition()
+    main	
+    The team against which the performance is requires
+    plot	
+    Whether a plot should be displayed or a dataframe to be returned
+    top
+    The top number of bowlers in result
+    runsConded
+    The number of runs conceded by bowlers
+    Value
+    
+    dataframe The dataframe with all performances
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/    
+    '''
+    df1=matches.loc[matches.team== main]
+    df2= df1[['bowler','batsman','runs']]
+    
+    # Number of wickets taken by bowler
+    df3=df2.groupby(['bowler','batsman']).sum().reset_index(inplace=False)
+    df3.columns = ['bowler','batsman','runsConceded']
+    
+    # Need to pick the 'top' number of bowlers by wickets
+    df4 = df3.groupby('bowler').sum().reset_index(inplace=False).sort_values('runsConceded',ascending=False)
+    df4.columns = ['bowler','totalRunsConceded']
+    df5 = df4.head(top)
+    df6= pd.merge(df5,df3,on='bowler')
+    df7 = df6[['bowler','batsman','runsConceded']]
+    
+    
+    # Remove rows where runsScored < runsScored as there are too many
+    df8 = df7[df7['runsConceded'] >runsConceded]
+    df9=df8.groupby(['bowler','batsman'])['runsConceded'].sum().unstack().fillna(0)   
+    # Note: Can also use the below code -*************
+    #df9=df8.pivot(columns='bowler',index='batsman').fillna(0)
+    
+    if plot == True:
+        ax=df9.plot(kind='bar',stacked=False,legend=False,fontsize=8)
+        plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5),fontsize=8)
+        plt.title('Performance of' + main  + 'Bowlers vs Batsmen ' )
+        plt.xlabel('Bowler')
+        plt.ylabel('Total runs') 
+        plt.show()
+        plt.gcf().clear()
+    else:
+        return(df7)
+        
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 1 Feb 2019
+# Function: plotWinLossByTeamAllOpposition
+# This function computes and plots twins and lossed of  IPL team against all other 
+# IPL teams
+#
+###########################################################################################
+def plotWinLossByTeamAllOpposition(matches, team1, plot='summary'):
+    '''
+    Plot wins for each team
+    
+    Description
+    
+    This function computes and plots number of wins for each team in all their encounters. 
+    The plot includes the number of wins byteam1 each team and the matches with no result
+    
+    Usage
+    
+    plotWinLossByTeamAllOpposition(matches, main, plot='summary')
+    Arguments
+    
+    matches
+    The dataframe with all matches between 2 IPL teams
+    main
+    The 1st team
+    plot
+    Summary or detailed
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+    '''
+    a=matches[['date','winner']].groupby(['date','winner']).count().reset_index(inplace=False)
+    # Plot the overall performance as wins and losses
+    if plot=="summary":
+        m= a.loc[a.winner==team1]['winner'].count()
+        n= a.loc[a.winner!=team1]['winner'].count()
+        df=pd.DataFrame({'outcome':['win','loss'],'number':[m,n]})
+        sns.barplot(x='outcome',y='number',data=df)
+        plt.xlabel('Outcome')
+        plt.ylabel('Number')
+        plt.title("Wins vs losses(summary) of " +  team1 + ' against all Opposition' )
+        plt.show()
+        plt.gcf().clear()
+    elif plot=="detailed" : 
+        #Plot breakup by team
+        b=a.groupby('winner').count().reset_index(inplace=False)
+        # If 'winner' is '0' then the match is a tie.Set as 'tie'
+        b.loc[b.winner=='0','winner']='Tie'
+        b.columns = ['winner','number']
+        ax=sns.barplot(x='winner',y='number',data=b)
+        plt.xlabel('Winner')
+        plt.ylabel('Number')
+        plt.title("Wins vs losses(detailed) of " +  team1 + ' against all Opposition' )
+        ax.set_xticklabels(ax.get_xticklabels(),rotation=60,fontsize=6)
+        plt.show()
+        plt.gcf().clear()
+    else:
+        print("Unknown option")
+        
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 1 Feb 2019
+# Function: plotWinsByRunOrWicketsAllOpposition
+# This function computes and plots twins and lossed of  IPL team against all other 
+# IPL teams
+#
+###########################################################################################
+def plotWinsByRunOrWicketsAllOpposition(matches,team1):
+    '''
+    Plot whether the wins for the team was by runs or wickets
+    
+    Description
+    
+    This function computes and plots number the number of wins by runs vs number of wins
+    by wickets against all Opposition
+    
+    Usage
+    
+    plotWinsByRunOrWicketsAllOpposition(matches,team1)
+    Arguments
+    
+    matches
+    The dataframe with all matches between an IPL team and all IPL teams
+    
+    team1
+    The team for which the plot has to be done
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/   
+    '''
+    # Get the number of matches won
+    df= matches.loc[matches.winner == team1]
+    a=df[['date','winType']].groupby(['date','winType']).count().reset_index(inplace=False)
+    b=a.groupby('winType').count().reset_index(inplace=False)
+    b.columns = ['winType','number']
+    sns.barplot(x='winType',y='number',data=b)
+    plt.xlabel('Win Type - Runs or wickets')
+    plt.ylabel('Number')
+    plt.title("Win type for team -" +  team1 + ' against all opposition' )
+    plt.show()
+    plt.gcf().clear()
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 1 Feb 2019
+# Function: plotWinsbyTossDecisionAllOpposition
+# This function computes and plots the win type of IPL team against all 
+# IPL teams
+#
+###########################################################################################
+def plotWinsbyTossDecisionAllOpposition(matches,team1,tossDecision='bat',plot="summary"):
+    '''
+    Plot whether the wins for the team was by runs or wickets
+    
+    Description
+    
+    This function computes and plots number the number of wins by runs vs number of wins
+    by wickets
+    
+    Usage
+    
+    plotWinsbyTossDecisionAllOpposition(matches,team1,tossDecision='bat',plot="summary")
+    Arguments
+    
+    matches
+    The dataframe with all matches between 2 IPL teams
+    
+    team1
+    The team for which the plot has to be done
+    
+    plot
+    'summary' or 'detailed'
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+    
+    See Also
+    
+    teamBowlingScorecardOppnAllMatches
+    teamBatsmenPartnershipOppnAllMatchesChart
+    teamBowlingWicketKindOppositionAllMatches       
+    '''    
+
+    df=matches.loc[(matches.tossDecision==tossDecision) & (matches.tossWinner==team1)]
+    a=df[['date','winner']].groupby(['date','winner']).count().reset_index(inplace=False)
+    
+    if plot=="summary":
+        m= a.loc[a.winner==team1]['winner'].count()
+        n= a.loc[a.winner!=team1]['winner'].count()
+        df=pd.DataFrame({'outcome':['win','loss'],'number':[m,n]})
+        sns.barplot(x='outcome',y='number',data=df)
+        plt.xlabel('Outcome')
+        plt.ylabel('Number')
+        plt.title("Wins vs losses(summary) against all opposition when toss decision was to " + tossDecision + ' for ' +  team1 )
+        plt.show()
+        plt.gcf().clear()
+    elif plot=="detailed" : 
+        #Plot breakup by team        
+        b=a.groupby('winner').count().reset_index(inplace=False)
+        # If 'winner' is '0' then the match is a tie.Set as 'tie'
+        b.loc[b.winner=='0','winner']='Tie'
+        b.columns = ['winner','number']
+        ax=sns.barplot(x='winner',y='number',data=b)
+        plt.xlabel(team1 + ' chose to ' + tossDecision)
+        plt.ylabel('Number')
+        plt.title('Wins vs losses(detailed) against all opposition for ' + team1 + ' when toss decision was to ' + tossDecision )
+        ax.set_xticklabels(ax.get_xticklabels(),rotation=60, fontsize=6)
+        plt.show()
+        plt.gcf().clear()
