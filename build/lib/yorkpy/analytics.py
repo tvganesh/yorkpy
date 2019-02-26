@@ -5,6 +5,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from pylab import rcParams
 import seaborn as sns
+import numpy as np
+from sklearn.linear_model import LinearRegression
 
 ##########################################################################################
 # Designed and developed by Tinniam V Ganesh
@@ -2880,3 +2882,1514 @@ def plotWinsbyTossDecisionAllOpposition(matches,team1,tossDecision='bat',plot="s
         ax.set_xticklabels(ax.get_xticklabels(),rotation=60, fontsize=6)
         plt.show()
         plt.gcf().clear()
+        return
+
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: getTeamBattingDetails
+# This function computes the batting details of a team
+# IPL teams
+#
+###########################################################################################        
+        
+def getTeamBattingDetails(team,dir=".",save=False):
+    '''
+    Description
+    
+    This function gets the batting details of a team in all matchs against all oppositions. This gets all the details of the batsmen balls faced,4s,6s,strikerate, runs, venue etc. This function is then used for analyses of batsmen. This function calls teamBattingPerfDetails()
+    
+    Usage
+    
+    getTeamBattingDetails(team,dir=".",save=FALSE)
+    Arguments
+    
+    team	
+    The team for which batting details is required
+    dir	
+    The source directory of RData files obtained with convertAllYaml2RDataframes()
+    save	
+    Whether the data frame needs to be saved as RData or not. It is recommended to set save=TRUE as the data can be used for a lot of analyses of batsmen
+    Value
+    
+    battingDetails The dataframe with the batting details
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.in/
+    
+    Examples  
+    m=getTeamBattingDetails(team1,dir1,save=True)
+    '''
+    
+    # Get all matches played by team
+    t1 = '*' +  team +'*.csv'
+    path= os.path.join(dir1,t1)
+    files = glob.glob(path) 
+    print(len(files))
+    
+    # Create an empty dataframe
+    details = pd.DataFrame()
+    
+    # Loop through all matches played by team
+    for file in files:
+          match=pd.read_csv(file)
+        
+          scorecard,extras=teamBattingScorecardMatch(match,team)
+          
+          # Filter out only the rows played by team
+          match1 = match.loc[match.team==team]
+          # Remove rows where the batsman was not out
+          b=match1.loc[match.kind != '0']
+          
+          # Get the details of the wicket
+          wkts= b[['batsman','bowler','fielders','kind','player_out']]
+          #date','team2','winner','result','venue']]
+          df=pd.merge(scorecard,wkts,how='outer',on='batsman')
+          
+          # Fill NA as not outs
+          df =df.fillna('notOut')
+          
+          # Set other info
+          if len(b) != 0:
+              df['date']= b['date'].iloc[0]
+              df['team2']= b['team2'].iloc[0]
+              df['winner']= b['winner'].iloc[0]
+              df['result']= b['result'].iloc[0]
+              df['venue']= b['venue'].iloc[0]         
+              details= pd.concat([details,df])
+              details = details.sort_values(['batsman','date'])           
+ 
+    if save==True:
+              fileName = "./" + team + "-BattingDetails.csv"
+              details.to_csv(fileName)
+             
+    return(details)
+    
+
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: getBatsmanDetails
+# This function gets the batsman details
+# IPL teams
+#
+###########################################################################################         
+    
+def getBatsmanDetails(team, name,dir="."):
+    '''
+    Get batting details of batsman from match
+
+    Description
+    
+    This function gets the batting details of a batsman given the match data as a RData file
+    
+    Usage
+    
+    getBatsmanDetails(team,name,dir=".")
+    Arguments
+    
+    team	
+    The team of the batsman e.g. India
+    name	
+    Name of batsman
+    dir	
+    The directory where the source file exists
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.in/
+
+    
+    See Also
+    
+    batsmanRunsPredict
+    batsmanMovingAverage
+    bowlerWicketsVenue
+    bowlerMeanRunsConceded
+    Examples
+    
+    ## Not run: 
+    name="SK Raina"
+    team='Chennai Super Kings'
+    #df=getBatsmanDetails(team, name,dir=".")
+    '''
+    path = dir + '/' + team + "-BattingDetails.csv"
+    battingDetails= pd.read_csv(path)
+    batsmanDetails = battingDetails.loc[battingDetails['batsman'].str.contains(name)]
+    return(batsmanDetails)
+    
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: getBatsmanDetails
+# This function plots runs vs deliveries for the batsman
+#
+###########################################################################################  
+def batsmanRunsVsDeliveries(df,name= "A Late Cut"):
+    '''
+    Runs versus deliveries faced
+    
+    Description
+    
+    This function plots the runs scored and the deliveries required. A regression smoothing function is used to fit the points
+    
+    Usage
+    
+    batsmanRunsVsDeliveries(df, name= "A Late Cut")
+    Arguments
+    
+    df	
+    Data frame
+    name	
+    Name of batsman
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+
+    
+    See Also
+    
+    batsmanFoursSixes
+    batsmanRunsVsDeliveries
+    batsmanRunsVsStrikeRate
+    
+    Examples   
+    name="SK Raina"
+    team='Chennai Super Kings'
+    df=getBatsmanDetails(team, name,dir=".")
+    batsmanRunsVsDeliveries(df, name)
+    '''
+    rcParams['figure.figsize'] = 8, 5
+    plt.scatter(df.balls,df.runs)
+    sns.lmplot(x='balls',y='runs', data=df)
+    plt.xlabel("Balls faced",fontsize=8)
+    plt.ylabel('Runs',fontsize=8)
+    atitle=name + "- Runs vs balls faced"
+    plt.title(atitle,fontsize=8)
+    plt.show()
+    plt.gcf().clear()
+    return
+
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: batsmanFoursSixes
+# This function gets the batsman fours and sixes for batsman
+# 
+#
+###########################################################################################  
+    
+def batsmanFoursSixes(df,name= "A Leg Glance"):
+    '''
+    Description
+    
+    This function computes and plots the total runs, fours and sixes of the batsman
+    
+    Usage
+    
+    batsmanFoursSixes(df,name= "A Leg Glance")
+    Arguments
+    
+    df	
+    Data frame
+    name	
+    Name of batsman
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+
+    
+    See Also
+    
+    batsmanDismissals batsmanRunsVsDeliveries batsmanRunsVsStrikeRate batsmanRunsVsStrikeRate batsmanRunsPredict
+    
+    Examples 
+    name="SK Raina"
+    team='Chennai Super Kings'
+    df=getBatsmanDetails(team, name,dir=".")
+    batsmanFoursSixes(df,"SK Raina")
+
+    '''
+ 
+    # Compute runs from fours and sixes 
+    rcParams['figure.figsize'] = 8, 5
+    df['RunsFromFours']=df['4s']*4
+    df['RunsFromSixes']=df['6s']*6
+    df1 = df[['balls','runs','RunsFromFours','RunsFromSixes']]
+    
+    # Total runs
+    sns.scatterplot('balls','runs',data=df1)
+    # Fit a linear regression line
+    balls=df1.balls.reshape(-1,1)
+    linreg = LinearRegression().fit(balls, df1.runs)
+    x=np.linspace(0,120,10)    
+    #Plot regression line balls vs runs
+    plt.plot(x, linreg.coef_ * x + linreg.intercept_, color='blue',label="Total runs")
+    
+    # Runs from fours
+    sns.scatterplot('balls','RunsFromFours',data=df1)
+    #Plot regression line balls vs Runs from fours
+    linreg = LinearRegression().fit(balls, df1.RunsFromFours)
+    plt.plot(x, linreg.coef_ * x + linreg.intercept_, color='red',label="Runs from fours")
+    
+    # Runs from sixes
+    sns.scatterplot('balls','RunsFromSixes',data=df1)
+    #Plot regression line balls vs Runs from sixes
+    linreg = LinearRegression().fit(balls, df1.RunsFromSixes)
+    plt.plot(x, linreg.coef_ * x + linreg.intercept_, color='green',label="Runs from sixes")
+    
+    plt.xlabel("Balls faced",fontsize=8)
+    plt.ylabel('Runs',fontsize=8)
+    atitle=name + "- Total runs, fours and sixes"
+    plt.title(atitle,fontsize=8)
+    plt.legend(loc="upper left")
+    plt.show()
+    plt.gcf().clear()
+    return
+     
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: batsmanDismissals
+# This function plots the batsman dismissals
+#
+###########################################################################################       
+def batsmanDismissals(df,name="A Leg Glance"):
+    '''
+    Description
+    
+    This function computes and plots the type of dismissals of the the batsman
+    
+    Usage
+    
+    batsmanDismissals(df,name="A Leg Glance")
+    Arguments
+    
+    df	
+    Data frame
+    name	
+    Name of batsman
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+    
+    See Also
+    
+    batsmanFoursSixes
+    batsmanRunsVsDeliveries
+    batsmanRunsVsStrikeRate
+    Examples   
+    name="SK Raina"
+    team='Chennai Super Kings'
+    df=getBatsmanDetails(team, name,dir=".")
+    batsmanDismissals(df,"SK Raina")
+    
+    '''
+    
+    # Count dismissals
+    rcParams['figure.figsize'] = 8, 5
+    df1 = df[['batsman','kind']]
+    df2 = df1.groupby('kind').count().reset_index(inplace=False)
+    df2.columns = ['dismissals','count']
+    plt.pie(df2['count'], labels=df2['dismissals'],autopct='%.1f%%')
+    atitle= name + "-Dismissals"
+    plt.title(atitle,fontsize=8)
+    plt.show()
+    plt.gcf().clear()
+    return
+    
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: batsmanRunsVsStrikeRate
+# This function plots the runs vs strike rate
+# 
+#
+###########################################################################################  
+def batsmanRunsVsStrikeRate (df,name= "A Late Cut"):
+    '''
+    Description
+    
+    This function plots the runs scored by the batsman and the runs scored by the batsman. A loess line is fitted over the points
+    
+    Usage
+    
+    batsmanRunsVsStrikeRate(df, name= "A Late Cut")
+    Arguments
+    
+    df	
+    Data frame
+    name	
+    Name of batsman
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+    https://github.com/tvganesh/yorkrData
+    
+    See Also
+    
+    batsmanDismissals
+    batsmanRunsVsDeliveries
+    batsmanRunsVsStrikeRate
+    teamBatsmenPartnershipAllOppnAllMatches
+    Examples
+    name="SK Raina"
+    team='Chennai Super Kings'
+    df=getBatsmanDetails(team, name,dir=".")
+    batsmanRunsVsStrikeRate(df,"SK Raina")
+        
+    '''
+    rcParams['figure.figsize'] = 8, 5
+    plt.scatter(df.runs,df.SR)
+    sns.lmplot(x='runs',y='SR', data=df,order=2)
+    plt.xlabel("Runs",fontsize=8)
+    plt.ylabel('Strike Rate',fontsize=8)
+    atitle=name + "- Runs vs Strike rate"
+    plt.title(atitle,fontsize=8)
+    plt.show()
+    plt.gcf().clear()
+    return
+
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: movingaverage
+# This computes the moving average 
+# 
+#
+###########################################################################################  
+
+def movingaverage(interval, window_size):
+    window= np.ones(int(window_size))/float(window_size)
+    return np.convolve(interval, window, 'same')
+    
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: batsmanMovingAverage
+# This function plots the moving average of runs
+# 
+#
+###########################################################################################      
+def batsmanMovingAverage(df, name):
+    '''
+    Description
+    
+    This function plots the runs scored by the batsman over the career as a time series. A loess regression line is plotted on the moving average of the batsman the batsman
+    
+    Usage
+    
+    batsmanMovingAverage(df, name= "A Leg Glance")
+    Arguments
+    
+    df	
+    Data frame
+    name	
+    Name of batsman
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+
+    
+    See Also
+    
+    batsmanDismissals
+    batsmanRunsVsDeliveries
+    batsmanRunsVsStrikeRate
+    teamBatsmenPartnershipAllOppnAllMatches
+    Examples 
+    name="SK Raina"
+    team='Chennai Super Kings'
+    df=getBatsmanDetails(team, name,dir=".")
+    batsmanMovingAverage(df,"SK Raina")
+    
+    '''
+    rcParams['figure.figsize'] = 8, 5
+    y_av = movingaverage(df.runs, 10)
+    date= pd.to_datetime(df['date'])
+    plt.plot(date, y_av,"b")
+    plt.xlabel('Date',fontsize=8)
+    plt.ylabel('Runs',fontsize=8)
+    plt.xticks(rotation=90)
+    atitle = name +  "-Moving average of runs"
+    plt.title(atitle,fontsize=8)
+    plt.show()
+    plt.gcf().clear()
+    return
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: batsmanCumulativeAverageRuns
+# This functionplots the cumulative average runs
+# 
+#
+###########################################################################################  
+def batsmanCumulativeAverageRuns(df,name="A Leg Glance"):
+    '''
+    Batsman's cumulative average runs
+    
+    Description
+    
+    This function computes and plots the cumulative average runs of a batsman
+    
+    Usage
+    
+    batsmanCumulativeAverageRuns(df,name= "A Leg Glance")
+    Arguments
+    
+    df	
+    Data frame
+    name	
+    Name of batsman
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+
+    
+    See Also
+    
+    batsmanCumulativeStrikeRate bowlerCumulativeAvgEconRate bowlerCumulativeAvgWickets batsmanRunsVsStrikeRate batsmanRunsPredict
+    
+    Examples 
+    name="SK Raina"
+    team='Chennai Super Kings'
+    df=getBatsmanDetails(team, name,dir=".")
+    batsmanCumulativeAverageRuns(df,"SK Raina")
+    
+    '''
+    rcParams['figure.figsize'] = 8, 5
+    cumAvgRuns = df['runs'].cumsum()/pd.Series(np.arange(1, len( df['runs'])+1),  df['runs'].index)
+    plt.plot(cumAvgRuns)
+    plt.xlabel('No of matches',fontsize=8)
+    plt.ylabel('Cumulative Average Runs',fontsize=8)
+    plt.xticks(rotation=90)
+    atitle = name +  "-Cumulative Average Runs vs matches"
+    plt.title(atitle,fontsize=8)
+    plt.show()
+    plt.gcf().clear()
+    return
+
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: batsmanCumulativeStrikeRate
+# This function plots the cumulative average Strike rate
+# 
+#
+###########################################################################################  
+def batsmanCumulativeStrikeRate(df,name="A Leg Glance"):
+    '''
+    Description
+    
+    This function computes and plots the cumulative average strike rate of a batsman
+    
+    Usage
+    
+    batsmanCumulativeStrikeRate(df,name= "A Leg Glance")
+    Arguments
+    
+    df	
+    Data frame
+    name	
+    Name of batsman
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+    https://github.com/tvganesh/yorkrData
+    
+    See Also
+    
+    batsmanCumulativeAverageRuns bowlerCumulativeAvgEconRate bowlerCumulativeAvgWickets batsmanRunsVsStrikeRate batsmanRunsPredict
+    
+    Examples
+    name="SK Raina"
+    team='Chennai Super Kings'
+    df=getBatsmanDetails(team, name,dir=".")
+    #batsmanCumulativeAverageRunsdf(df,name)
+   
+    
+    '''
+    rcParams['figure.figsize'] = 8, 5
+    cumAvgRuns = df['SR'].cumsum()/pd.Series(np.arange(1, len( df['SR'])+1),  df['SR'].index)
+    plt.plot(cumAvgRuns)
+    plt.xlabel('No of matches',fontsize=8)
+    plt.ylabel('Cumulative Average Strike Rate',fontsize=8)
+    plt.xticks(rotation=70)
+    atitle = name +  "-Cumulative Average Strike Rate vs matches"
+    plt.title(atitle,fontsize=8) 
+    plt.show()
+    plt.gcf().clear()
+    return
+
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: batsmanRunsAgainstOpposition
+# This function plots the batsman's runs against opposition
+# 
+#
+###########################################################################################  
+def batsmanRunsAgainstOpposition(df,name= "A Leg Glance"):
+    '''
+    Description
+
+    This function computes and plots the mean runs scored by the batsman against different oppositions
+    
+    Usage
+    
+    batsmanRunsAgainstOpposition(df, name= "A Leg Glance")
+    Arguments
+    
+    df	
+    Data frame
+    name	
+    Name of batsman
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+    https://github.com/tvganesh/yorkrData
+    
+    See Also
+    
+    batsmanFoursSixes
+    batsmanRunsVsDeliveries
+    batsmanRunsVsStrikeRate
+    teamBatsmenPartnershipAllOppnAllMatches
+    Examples
+    name="SK Raina"
+    team='Chennai Super Kings'
+    df=getBatsmanDetails(team, name,dir=".")
+    batsmanRunsAgainstOpposition(df,name)
+
+    '''
+    rcParams['figure.figsize'] = 8, 5
+    df1 = df[['batsman', 'runs','team2']]
+    df2=df1.groupby('team2').agg(['sum','mean','count'])
+    df2.columns= ['_'.join(col).strip() for col in df2.columns.values]
+    # Reset index
+    df3=df2.reset_index(inplace=False)
+    ax=sns.barplot(x='team2', y="runs_mean", data=df3)
+    plt.xticks(rotation="vertical",fontsize=8)
+    plt.xlabel('Opposition',fontsize=8)
+    plt.ylabel('Mean Runs',fontsize=8)
+    atitle=name + "-Mean Runs against opposition"
+    plt.title(atitle,fontsize=8)
+    plt.show()
+    plt.gcf().clear()
+    return
+
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: batsmanRunsVenue
+# This function plos the batsman's runs at venues
+# 
+#
+###########################################################################################  
+def batsmanRunsVenue(df,name= "A Leg Glance"):
+    '''
+    Description
+    
+    This function computes and plots the mean runs scored by the batsman at different venues of the world
+    
+    Usage
+    
+    batsmanRunsVenue(df, name= "A Leg Glance")
+    Arguments
+    
+    df	
+    Data frame
+    name	
+    Name of batsman
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+    https://github.com/tvganesh/yorkrData
+    
+    See Also
+    
+    batsmanFoursSixes
+    batsmanRunsVsDeliveries
+    batsmanRunsVsStrikeRate
+    teamBatsmenPartnershipAllOppnAllMatches
+    batsmanRunsAgainstOpposition
+    
+    Examples    
+    name="SK Raina"
+    team='Chennai Super Kings'
+    df=getBatsmanDetails(team, name,dir=".")
+    #batsmanRunsVenue(df,name)
+    '''
+    rcParams['figure.figsize'] = 8, 5
+    df1 = df[['batsman', 'runs','venue']]
+    df2=df1.groupby('venue').agg(['sum','mean','count'])
+    df2.columns= ['_'.join(col).strip() for col in df2.columns.values]
+    # Reset index
+    df3=df2.reset_index(inplace=False)
+    ax=sns.barplot(x='venue', y="runs_mean", data=df3)
+    plt.xticks(rotation="vertical",fontsize=8)
+    plt.xlabel('Venue',fontsize=8)
+    plt.ylabel('Mean Runs',fontsize=8)
+    atitle=name + "-Mean Runs at venues"
+    plt.title(atitle,fontsize=8)
+    plt.show()
+    plt.gcf().clear()
+    return
+    
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: teamBowlingPerDetails
+# This function gets the bowling performances
+# 
+#
+###########################################################################################  
+def teamBowlingPerDetails(team):
+
+    # Compute overs bowled
+    a1= getOvers(team).reset_index(inplace=False)
+    # Compute runs conceded
+    b1= getRunsConceded(team).reset_index(inplace=False)   
+    # Compute maidens
+    c1= getMaidens(team).reset_index(inplace=False)   
+    # Compute wickets
+    d1= getWickets(team).reset_index(inplace=False)
+    e1=pd.merge(a1, b1, how='outer', on='bowler')
+    f1= pd.merge(e1,c1,how='outer', on='bowler')
+    g1= pd.merge(f1,d1,how='outer', on='bowler')
+    g1 = g1.fillna(0)
+    # Compute economy rate
+    g1['econrate'] = g1['runs']/g1['overs']
+    g1.columns=['bowler','overs','runs','maidens','wicket','econrate']
+    g1.maidens = g1.maidens.astype(int)
+    g1.wicket = g1.wicket.astype(int)
+    return(g1)
+    
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: getTeamBowlingDetails
+# This function gets the team bowling details
+# 
+#
+###########################################################################################  
+def getTeamBowlingDetails (team,dir=".",save=False):
+    '''
+    Description
+    
+    This function gets the bowling details of a team in all matchs against all oppositions. This gets all the details of the bowlers for e.g deliveries, maidens, runs, wickets, venue, date, winner ec
+    
+    Usage
+    
+    getTeamBowlingDetails(team,dir=".",save=FALSE)
+    Arguments
+    
+    team	
+    The team for which detailed bowling info is required
+    dir	
+    The source directory of RData files obtained with convertAllYaml2RDataframes()
+    save	
+    Whether the data frame needs to be saved as RData or not. It is recommended to set save=TRUE as the data can be used for a lot of analyses of batsmen
+    Value
+    
+    bowlingDetails The dataframe with the bowling details
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+    https://github.com/tvganesh/yorkrData
+    
+    See Also
+    
+    getBatsmanDetails
+    getBowlerWicketDetails
+    batsmanDismissals
+    getTeamBattingDetails
+    Examples    
+    dir1= "C:\\software\\cricket-package\\yorkpyIPLData\\data"
+    eam1='Delhi Daredevils'
+    m=getTeamBowlingDetails(team1,dir1,save=True)
+    '''
+    
+    # Get all matches played by team
+    t1 = '*' +  team +'*.csv'
+    path= os.path.join(dir1,t1)
+    files = glob.glob(path) 
+    print(len(files))
+    
+    # Create an empty dataframe
+    details = pd.DataFrame()
+    
+    # Loop through all matches played by team
+    for file in files:
+          match=pd.read_csv(file)
+          team1=match.loc[match.team != theTeam]
+
+          if len(team) !=0:
+              scorecard=teamBowlingPerDetails(team1)
+              scorecard['date']= match['date'].iloc[0]
+              scorecard['team2']= match['team2'].iloc[0]
+              scorecard['winner']= match['winner'].iloc[0]
+              scorecard['result']= match['result'].iloc[0]
+              scorecard['venue']= match['venue'].iloc[0]       
+              details= pd.concat([details,scorecard])
+              details = details.sort_values(['bowler','date'])
+          else:
+              pass # The team did not bowl
+    if save==True:
+         fileName = "./" + team + "-BowlingDetails.csv"
+         print(fileName)
+         details.to_csv(fileName,index=False)
+              
+    return(details)
+    
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: getBowlerWicketDetails
+# This function gets the bowler wicket
+# 
+#
+###########################################################################################  
+    
+def getBowlerWicketDetails (team, name,dir="."):
+    '''
+    Description
+    
+    This function gets the bowling of a bowler (overs,maidens,runs,wickets,venue, opposition)
+    
+    Usage
+    
+    getBowlerWicketDetails(team,name,dir=".")
+    Arguments
+    
+    team	
+    The team to which the bowler belongs
+    name	
+    The name of the bowler
+    dir	
+    The source directory of the data
+    Value
+    
+    dataframe The dataframe of bowling performance
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+    https://github.com/tvganesh/yorkrData
+    
+    See Also
+    
+    bowlerMovingAverage
+    getTeamBowlingDetails
+    bowlerMeanRunsConceded
+    teamBowlersWicketRunsOppnAllMatches
+    
+    Examples    
+    name="R Ashwin"
+    team='Chennai Super Kings'
+    df=getBowlerWicketDetails(team, name,dir=".")
+    '''
+    path = dir + '/' + team + "-BowlingDetails.csv"
+    bowlingDetails= pd.read_csv(path,index_col=False)
+    bowlerDetails = bowlingDetails.loc[bowlingDetails['bowler'].str.contains(name)]
+    return(bowlerDetails)
+    
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: bowlerMeanEconomyRate
+# This function gets the bowler mean economy rate
+# 
+#
+###########################################################################################  
+def bowlerMeanEconomyRate(df,name="A Leg Glance"):
+    '''
+    Description
+    
+    This function computes and plots mean economy rate and the number of overs bowled by the bowler
+    
+    Usage
+    
+    bowlerMeanEconomyRate(df, name)
+    Arguments
+    
+    df	
+    Data frame
+    name	
+    Name of bowler
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+    
+    See Also
+    
+    bowlerMovingAverage
+    bowlerWicketPlot
+    bowlerWicketsVenue
+    bowlerMeanRunsConceded
+    
+    Examples    
+    name="R Ashwin"
+    team='Chennai Super Kings'
+    df=getBowlerWicketDetails(team, name,dir=".")
+    bowlerMeanEconomyRate(df, name)
+    
+    '''
+    
+    # Count dismissals
+    rcParams['figure.figsize'] = 8, 5
+    df2=df[['bowler','overs','econrate']].groupby('overs').mean().reset_index(inplace=False)
+    plt.xlabel('No of overs',fontsize=8)
+    plt.ylabel('Mean economy rate',fontsize=8)
+    sns.barplot(x='overs',y='econrate',data=df2)
+    atitle = name +  "-Mean economy rate vs overs"
+    plt.title(atitle,fontsize=8)
+    plt.show()
+    plt.gcf().clear()
+    return
+
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: bowlerMeanRunsConceded
+# This function gets the mean runs conceded by bowler
+# 
+#
+###########################################################################################  
+def bowlerMeanRunsConceded (df,name="A Leg Glance"):
+    '''
+    Description
+    
+    This function computes and plots mean runs conceded by the bowler for the number of overs bowled by the bowler
+    
+    Usage
+    
+    bowlerMeanRunsConceded(df, name)
+    Arguments
+    
+    df	
+    Data frame
+    name	
+    Name of bowler
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+
+    
+    See Also
+    
+    bowlerMovingAverage
+    bowlerWicketPlot
+    bowlerWicketsVenue
+    bowlerMeanRunsConceded
+    
+    Examples    
+    name="R Ashwin"
+    team='Chennai Super Kings'
+    df=getBowlerWicketDetails(team, name,dir=".")
+    bowlerMeanRunsConceded(df, name)
+    '''
+    
+    # Count dismissals
+    rcParams['figure.figsize'] = 8, 5
+    df2=df[['bowler','overs','runs']].groupby('overs').mean().reset_index(inplace=False)
+    plt.xlabel('No of overs',fontsize=8)
+    plt.ylabel('Mean runs conceded',fontsize=8)
+    sns.barplot(x='overs',y='runs',data=df2)
+    atitle = name +  "-Mean runs conceded vs overs"
+    plt.title(atitle,fontsize=8)
+    plt.show()
+    plt.gcf().clear()
+    return
+
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: bowlerMovingAverage
+# This function gets the bowler moving average
+# 
+#
+###########################################################################################  
+def bowlerMovingAverage (df, name):
+    '''
+    Description
+    
+    This function computes and plots the wickets taken by the bowler over career. A loess regression fit plots the moving average of wickets taken by bowler
+    
+    Usage
+    
+    bowlerMovingAverage(df, name)
+    Arguments
+    
+    df	
+    Data frame
+    name	
+    Name of bowler
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+    https://github.com/tvganesh/yorkrData
+    
+    See Also
+    
+    bowlerMeanEconomyRate
+    bowlerWicketPlot
+    bowlerWicketsVenue
+    bowlerMeanRunsConceded
+    
+    Examples  
+    name="R Ashwin"
+    team='Chennai Super Kings'
+    df=getBowlerWicketDetails(team, name,dir=".")
+    bowlerMeanEconomyRate(df, name)
+    '''
+    rcParams['figure.figsize'] = 8, 5
+    y_av = movingaverage(df.wicket, 30)
+    date= pd.to_datetime(df['date'])
+    plt.plot(date, y_av,"b")
+    plt.xlabel('Date',fontsize=8)
+    plt.ylabel('Wickets',fontsize=8)
+    plt.xticks(rotation=70)
+    atitle = name +  "-Moving average of wickets"
+    plt.title(atitle,fontsize=8)
+    plt.show()
+    plt.gcf().clear()
+    return
+
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: bowlerCumulativeAvgWickets
+# This function gets the bowler cumulative average runs
+# 
+#
+###########################################################################################  
+def bowlerCumulativeAvgWickets(df,name="A Leg Glance"):
+    '''
+    Description
+    
+    This function computes and plots the cumulative average wickets of a bowler
+    
+    Usage
+    
+    bowlerCumulativeAvgWickets(df,name)
+    Arguments
+    
+    df	
+    Data frame
+    name	
+    Name of batsman
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+    https://github.com/tvganesh/yorkrData
+    
+    See Also
+    
+    batsmanCumulativeAverageRuns bowlerCumulativeAvgEconRate batsmanCumulativeStrikeRate batsmanRunsVsStrikeRate batsmanRunsPredict
+    
+    Examples  
+    
+    name="R Ashwin"
+    team='Chennai Super Kings'
+    df=getBowlerWicketDetails(team, name,dir=".")
+    bowlerCumulativeAvgWickets(df, name)
+    
+    '''
+    rcParams['figure.figsize'] = 8, 5
+    cumAvgRuns = df['wicket'].cumsum()/pd.Series(np.arange(1, len( df['wicket'])+1),  df['wicket'].index)
+    plt.plot(cumAvgRuns)
+    plt.xlabel('No of matches',fontsize=8)
+    plt.ylabel('Cumulative Average wickets',fontsize=8)
+    plt.xticks(rotation=90)
+    atitle = name +  "-Cumulative Average wickets vs matches"
+    plt.title(atitle,fontsize=8)
+    plt.show()
+    plt.gcf().clear()
+    return
+
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: bowlerCumulativeAvgEconRate
+# This function gets the  bowler cumulative average economy rate
+# 
+#
+###########################################################################################  
+def bowlerCumulativeAvgEconRate(df,name="A Leg Glance"):
+    '''
+    Description
+    
+    This function computes and plots the cumulative average economy rate of a bowler
+    
+    Usage
+    
+    bowlerCumulativeAvgEconRate(df,name)
+    Arguments
+    
+    df	
+    Data frame
+    name	
+    Name of batsman
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+    https://github.com/tvganesh/yorkrData
+    
+    See Also
+    
+    batsmanCumulativeAverageRuns bowlerCumulativeAvgWickets batsmanCumulativeStrikeRate batsmanRunsVsStrikeRate batsmanRunsPredict
+    
+    Examples   
+    name="R Ashwin"
+    team='Chennai Super Kings'
+    df=getBowlerWicketDetails(team, name,dir=".")
+    bowlerMeanEconomyRate(df, name)
+    '''
+    rcParams['figure.figsize'] = 8, 5
+    cumAvgRuns = df['econrate'].cumsum()/pd.Series(np.arange(1, len( df['econrate'])+1),  df['econrate'].index)
+    plt.plot(cumAvgRuns)
+    plt.xlabel('No of matches',fontsize=7)
+    plt.ylabel('Cumulative Average economy rate',fontsize=8)
+    plt.xticks(rotation=70)
+    atitle = name +  "-Cumulative Average economy rate vs matches"
+    plt.title(atitle,fontsize=8)
+    plt.show()
+    plt.gcf().clear()
+    return
+
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: bowlerWicketPlot
+# This function gets the bowler wicket plot
+# 
+#
+###########################################################################################  
+def bowlerWicketPlot (df,name="A Leg Glance"):
+    '''
+    Description
+    
+    This function computes and plots the average wickets taken by the bowler versus the number of overs bowled
+    
+    Usage
+    
+    bowlerWicketPlot(df, name)
+    Arguments
+    
+    df	
+    Data frame
+    name	
+    Name of bowler
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+    https://github.com/tvganesh/yorkrData
+    
+    See Also
+    
+    bowlerMeanEconomyRate
+    bowlerWicketsVenue
+    bowlerMeanRunsConceded
+    
+    Examples  
+    name="R Ashwin"
+    team='Chennai Super Kings'
+    df=getBowlerWicketDetails(team, name,dir=".")
+    bowlerMeanEconomyRate(df, name)
+    
+    '''
+    rcParams['figure.figsize'] = 8, 5
+    # Count dismissals
+    df2=df[['bowler','overs','wicket']].groupby('overs').mean().reset_index(inplace=False)
+    plt.xlabel('No of overs',fontsize=8)
+    plt.ylabel('Mean wickets',fontsize=8)
+    sns.barplot(x='overs',y='wicket',data=df2)
+    atitle = name +  "-Mean wickets vs overs"
+    plt.title(atitle,fontsize=8)
+    plt.show()
+    plt.gcf().clear()
+    return
+
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: bowlerWicketsAgainstOpposition
+# This function gets the bowler's performance against opposition
+# 
+#
+###########################################################################################  
+def bowlerWicketsAgainstOpposition (df,name= "A Leg Glance"):
+    '''
+    Description
+    
+    This function computes and plots mean number of wickets taken by the bowler against different opposition
+    
+    Usage
+    
+    bowlerWicketsAgainstOpposition(df, name)
+    Arguments
+    
+    df	
+    Data frame
+    name	
+    Name of bowler
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+    
+    See Also
+    
+    bowlerMovingAverage
+    bowlerWicketPlot
+    bowlerWicketsVenue
+    bowlerMeanRunsConceded
+    
+    Examples 
+    name="R Ashwin"
+    team='Chennai Super Kings'
+    df=getBowlerWicketDetails(team, name,dir=".")
+    bowlerWicketsAgainstOpposition(df, name)
+    '''
+    rcParams['figure.figsize'] = 8, 5
+    df1 = df[['bowler', 'wicket','team2']]
+    df2=df1.groupby('team2').agg(['sum','mean','count'])
+    df2.columns= ['_'.join(col).strip() for col in df2.columns.values]
+    # Reset index
+    df3=df2.reset_index(inplace=False)
+    ax=sns.barplot(x='team2', y="wicket_mean", data=df3)
+    plt.xticks(rotation=90,fontsize=7)
+    plt.xlabel('Opposition',fontsize=7)
+    plt.ylabel('Mean wickets',fontsize=8)
+    atitle=name + "-Mean wickets against opposition"
+    plt.title(atitle,fontsize=8)
+    plt.show()
+    plt.gcf().clear()
+    return
+
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 24 Feb 2019
+# Function: bowlerWicketsVenue
+# This function gets the bowler wickets at venues
+# 
+#
+########################################################################################### 
+def bowlerWicketsVenue (df,name= "A Leg Glance"):
+    '''
+    Bowler performance at different venues
+    
+    Description
+    
+    This function computes and plots mean number of wickets taken by the bowler in different venues
+    
+    Usage
+    
+    bowlerWicketsVenue(df, name)
+    Arguments
+    
+    df	
+    Data frame
+    name	
+    Name of bowler
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+
+    
+    See Also
+    
+    bowlerMovingAverage
+    bowlerWicketPlot
+    bowlerWicketsVenue
+    bowlerMeanRunsConceded
+    
+    Examples  
+    name="R Ashwin"
+    team='Chennai Super Kings'
+    df=getBowlerWicketDetails(team, name,dir=".")
+    bowlerWicketsVenue(df, name)
+    '''
+    rcParams['figure.figsize'] = 8, 5
+    df1 = df[['bowler', 'wicket','venue']]
+    df2=df1.groupby('venue').agg(['sum','mean','count'])
+    df2.columns= ['_'.join(col).strip() for col in df2.columns.values]
+    # Reset index
+    df3=df2.reset_index(inplace=False)
+    ax=sns.barplot(x='venue', y="wicket_mean", data=df3)
+    plt.xticks(rotation=90,fontsize=7)
+    plt.xlabel('Venue',fontsize=7)
+    plt.ylabel('Mean wickets',fontsize=8)
+    atitle=name + "-Mean wickets at different venues"
+    plt.title(atitle,fontsize=8)  
+    plt.show()
+    plt.gcf().clear()
+    return
+
+
+
+
+    
+
