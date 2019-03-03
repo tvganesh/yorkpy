@@ -7,6 +7,8 @@ from pylab import rcParams
 import seaborn as sns
 import numpy as np
 from sklearn.linear_model import LinearRegression
+import glob
+import time
 
 ##########################################################################################
 # Designed and developed by Tinniam V Ganesh
@@ -374,7 +376,7 @@ def convertAllYaml2PandasDataframesT20(source,dest):
     for index, file in enumerate(files):
          print("\n\nFile no=",index)
          if file.endswith(".yaml"):
-             df, filename = convertYaml2PandasDataframe(file, source, dest)
+             df, filename = convertYaml2PandasDataframeT20(file, source, dest)
              #print(filename)
              
 
@@ -590,9 +592,17 @@ def getMaidens(df):
 
 ########################################################################################### 
 def getWickets(df):
+
     df1=df[['bowler','kind', 'player_out', 'fielders']]
-    df2= df1[df1.player_out !='0']
-    df3 = df2[['bowler','player_out']].groupby('bowler').count()
+    
+    # Check if the team took wickets. Then this column will be a string
+    if isinstance(df1.player_out.iloc[0],str):
+        df2= df1[df1.player_out !='0']
+        df3 = df2[['bowler','player_out']].groupby('bowler').count()
+    else: # Did not take wickets. Set wickets as 0
+        df3 = df1[['bowler','player_out']].groupby('bowler').count()
+        df3['player_out']=0 # Set wicktes as 0
+
     return(df3)
 
 
@@ -1208,10 +1218,9 @@ def getAllMatchesBetweenTeams(team1,team2,dir=".",save=False):
     # Create the 2 combinations
     t1 = team1 +'-' + team2 + '*.csv'
     t2 = team2 + '-' + team1 + '*.csv'
-    path1= os.path.join(dir1,t1)
-    path2 = os.path.join(dir1,t2)
-    
-    files = glob.glob(path1) + glob.glob(path2)
+    path1= os.path.join(dir,t1)
+    path2 = os.path.join(dir,t2)
+    files = glob.glob(path1) + glob.glob(path2)  
     print(len(files))
     # Save as CSV only if there are matches between the 2 teams
     if len(files) !=0:
@@ -2109,7 +2118,7 @@ def getAllMatchesAllOpposition(team1,dir=".",save=False):
 
     # Create the 2 combinations
     t1 = '*' +  team1 +'*.csv'
-    path= os.path.join(dir1,t1)
+    path= os.path.join(dir,t1)
 
     
     files = glob.glob(path) 
@@ -2420,7 +2429,7 @@ def teamBatsmenVsBowlersAllOppnAllMatches(matches,main,plot=True,top=5,runsScore
         ax=df9.plot(kind='bar',stacked=False,legend=False,fontsize=8)
         plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5),fontsize=8)
         #ax.legend(fontsize=25)
-        plt.title('Runs by ' + main + ' against all bowlers in IPL')
+        plt.title('Runs by ' + main + ' against all T20 bowlers')
         plt.xlabel('Batsman')
         plt.ylabel('Runs scored') 
         plt.show()
@@ -2586,7 +2595,7 @@ def teamBowlingWicketKindAllOppnAllMatches(matches,main,plot=True,top=5,wickets=
     if plot == True:
         ax=df9.plot(kind='bar',stacked=False,legend=False,fontsize=8)
         plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5),fontsize=8)
-        plt.title('Wicker kind by bowlers of ' + main + ' against all IPL teams')
+        plt.title('Wicker kind by bowlers of ' + main + ' against all T20 teams')
         plt.xlabel('Bowler')
         plt.ylabel('Total wickets') 
         plt.show()
@@ -2933,7 +2942,7 @@ def getTeamBattingDetails(team,dir=".",save=False):
     
     # Get all matches played by team
     t1 = '*' +  team +'*.csv'
-    path= os.path.join(dir1,t1)
+    path= os.path.join(dir,t1)
     files = glob.glob(path) 
     print(len(files))
     
@@ -2948,26 +2957,29 @@ def getTeamBattingDetails(team,dir=".",save=False):
           
           # Filter out only the rows played by team
           match1 = match.loc[match.team==team]
-          # Remove rows where the batsman was not out
-          b=match1.loc[match.kind != '0']
+       
+          # Check if there were wickets, you will 'bowled', 'caught' etc
+          if len(match1 !=0):
+            if isinstance(match1.kind.iloc[0],str):
+              b=match1.loc[match1.kind != '0']
           
-          # Get the details of the wicket
-          wkts= b[['batsman','bowler','fielders','kind','player_out']]
-          #date','team2','winner','result','venue']]
-          df=pd.merge(scorecard,wkts,how='outer',on='batsman')
-          
-          # Fill NA as not outs
-          df =df.fillna('notOut')
-          
-          # Set other info
-          if len(b) != 0:
-              df['date']= b['date'].iloc[0]
-              df['team2']= b['team2'].iloc[0]
-              df['winner']= b['winner'].iloc[0]
-              df['result']= b['result'].iloc[0]
-              df['venue']= b['venue'].iloc[0]         
-              details= pd.concat([details,df])
-              details = details.sort_values(['batsman','date'])           
+              # Get the details of the wicket
+              wkts= b[['batsman','bowler','fielders','kind','player_out']]
+              #date','team2','winner','result','venue']]
+              df=pd.merge(scorecard,wkts,how='outer',on='batsman')
+              
+              # Fill NA as not outs
+              df =df.fillna('notOut')
+              
+              # Set other info
+              if len(b) != 0:
+                  df['date']= b['date'].iloc[0]
+                  df['team2']= b['team2'].iloc[0]
+                  df['winner']= b['winner'].iloc[0]
+                  df['result']= b['result'].iloc[0]
+                  df['venue']= b['venue'].iloc[0]         
+                  details= pd.concat([details,df])
+                  details = details.sort_values(['batsman','date'])      
  
     if save==True:
               fileName = "./" + team + "-BattingDetails.csv"
@@ -3761,7 +3773,7 @@ def getTeamBowlingDetails (team,dir=".",save=False):
     
     # Get all matches played by team
     t1 = '*' +  team +'*.csv'
-    path= os.path.join(dir1,t1)
+    path= os.path.join(dir,t1)
     files = glob.glob(path) 
     print(len(files))
     
@@ -3771,9 +3783,9 @@ def getTeamBowlingDetails (team,dir=".",save=False):
     # Loop through all matches played by team
     for file in files:
           match=pd.read_csv(file)
-          team1=match.loc[match.team != theTeam]
+          team1=match.loc[match.team != team]
 
-          if len(team) !=0:
+          if len(team1) !=0:
               scorecard=teamBowlingPerDetails(team1)
               scorecard['date']= match['date'].iloc[0]
               scorecard['team2']= match['team2'].iloc[0]
@@ -4389,7 +4401,351 @@ def bowlerWicketsVenue (df,name= "A Leg Glance"):
     return
 
 
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 1 March 2019
+# Function: saveAllMatchesBetween2IntlT20s
+# This function saves all the matches between 2 Intl T20 teams
+#
+###########################################################################################
 
+def saveAllMatchesBetween2IntlT20s(dir1):  
+    '''
+    Saves all matches between 2 IPL teams as dataframe
+    Description
+   
+    This function saves all matches between 2 Intl. T20 countries as a single dataframe in the 
+    current directory
+    
+    Usage
+    
+    saveAllMatchesBetween2IntlT20s(dir)
+    Arguments
+    
+    dir	
+    Directory to store saved matches
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.in/
+    
+    See Also
+    
+    teamBowlingScorecardOppnAllMatches
+    teamBatsmenVsBowlersOppnAllMatches
+    '''
+    teams = ["Afghanistan","Australia","Bangladesh","Bermuda","Canada","England",
+             "Hong Kong","India","Ireland", "Kenya","Nepal","Netherlands",
+             "New Zealand", "Oman","Pakistan","Scotland","South Africa",
+             "Sri Lanka", "United Arab Emirates","West Indies", "Zimbabwe"]
+    
+    for team1 in teams:
+        for team2 in teams:
+            if team1 != team2:
+                print("Team1=",team1,"team2=", team2)
+                getAllMatchesBetweenTeams(team1,team2,dir=dir1,save=True)
+                time.sleep(2) #Sleep before  next save   
+                
+    return    
+
+
+
+
+###########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 2 Mar 2019
+# Function: saveAllMatchesAllOppositionIntlT20
+# This function saves all the matches between all Intl T20 teams
+#
+########################################################################################### 
+def saveAllMatchesAllOppositionIntlT20(dir1):  
+    '''
+    Saves matches against all Intl T20 teams as dataframe and CSV for an IPL team
+    
+    Description
+    
+    This function saves all Intl T20 matches agaist all opposition as a single 
+    dataframe in the current directory
+    
+    Usage
+    
+    saveAllMatchesAllOppositionIntlT20(dir)
+    Arguments
+    
+    dir	
+    Directory to store saved matches
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
 
     
+    See Also
+    
+    convertYaml2PandasDataframeT20
+    teamBattingScorecardMatch 
+    '''
+    teams = ["Afghanistan","Australia","Bangladesh","Bermuda","Canada","England",
+             "Hong Kong","India","Ireland", "Kenya","Nepal","Netherlands",
+             "New Zealand", "Oman","Pakistan","Scotland","South Africa",
+             "Sri Lanka", "United Arab Emirates","West Indies", "Zimbabwe"]
+    
+    for team in teams:
+                print("Team=",team)
+                getAllMatchesAllOpposition(team,dir=dir1,save=True)
+                time.sleep(2) #Sleep before  next save
+                   
 
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 2 March 2019
+# Function: saveAllMatchesBetween2BBLTeams
+# This function saves all the matches between 2 BBL Teams
+#
+###########################################################################################
+
+def saveAllMatchesBetween2BBLTeams(dir1):  
+    '''
+    Saves all matches between 2 BBLteams as dataframe
+    Description
+   
+    This function saves all matches between 2 BBL T20 countries as a single dataframe in the 
+    current directory
+    
+    Usage
+    
+    saveAllMatchesBetween2BBLTeams(dir)
+    Arguments
+    
+    dir	
+    Directory to store saved matches
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.in/
+    
+    See Also
+    
+    teamBowlingScorecardOppnAllMatches
+    teamBatsmenVsBowlersOppnAllMatches
+    '''
+    teams = ["Adelaide Strikers", "Brisbane Heat", "Hobart Hurricanes",
+             "Melbourne Renegades", "Perth Scorchers", "Sydney Sixers",
+             "Sydney Thunder"]
+    
+    for team1 in teams:
+        for team2 in teams:
+            if team1 != team2:
+                print("Team1=",team1,"team2=", team2)
+                getAllMatchesBetweenTeams(team1,team2,dir=dir1,save=True)
+                time.sleep(2) #Sleep before  next save   
+                
+    return    
+
+###########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 2 Mar 2019
+# Function: saveAllMatchesAllOppositionBBLT20
+# This function saves all the matches between all BBL T20 teams
+#
+########################################################################################### 
+def saveAllMatchesAllOppositionBBLT20(dir1):  
+    '''
+    Saves matches against all BBL T20 teams as dataframe and CSV for an IPL team
+    
+    Description
+    
+    This function saves all BBL T20 matches agaist all opposition as a single 
+    dataframe in the current directory
+    
+    Usage
+    
+    saveAllMatchesAllOppositionBBLT20(dir)
+    Arguments
+    
+    dir	
+    Directory to store saved matches
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+
+    
+    See Also
+    
+    convertYaml2PandasDataframeT20
+    teamBattingScorecardMatch 
+    '''
+    teams = ["Adelaide Strikers", "Brisbane Heat", "Hobart Hurricanes",
+             "Melbourne Renegades", "Perth Scorchers", "Sydney Sixers",
+             "Sydney Thunder"]
+    
+    for team in teams:
+                print("Team=",team)
+                getAllMatchesAllOpposition(team,dir=dir1,save=True)
+                time.sleep(2) #Sleep before  next save
+                
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 2 March 2019
+# Function: saveAllMatchesBetween2NWBTeams
+# This function saves all the matches between 2 NWB Teams
+#
+###########################################################################################
+
+def saveAllMatchesBetween2NWBTeams(dir1):  
+    '''
+    Saves all matches between 2 NWB teams as dataframe
+    Description
+   
+    This function saves all matches between 2 NWB T20 countries as a single dataframe in the 
+    current directory
+    
+    Usage
+    
+    saveAllMatchesBetween2NWBTeams(dir)
+    Arguments
+    
+    dir	
+    Directory to store saved matches
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.in/
+    
+    See Also
+    
+    teamBowlingScorecardOppnAllMatches
+    teamBatsmenVsBowlersOppnAllMatches
+    '''
+    teams = ["Derbyshire", "Durham", "Essex", "Glamorgan",
+             "Gloucestershire", "Hampshire", "Kent","Lancashire",
+             "Leicestershire", "Middlesex","Northamptonshire",
+             "Nottinghamshire","Somerset","Surrey","Sussex","Warwickshire",
+             "Worcestershire","Yorkshire"]
+    
+    for team1 in teams:
+        for team2 in teams:
+            if team1 != team2:
+                print("Team1=",team1,"team2=", team2)
+                getAllMatchesBetweenTeams(team1,team2,dir=dir1,save=True)
+                time.sleep(2) #Sleep before  next save   
+                
+    return   
+
+###########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 2 Mar 2019
+# Function: saveAllMatchesAllOppositionNWBT20
+# This function saves all the matches between all NWB T20 teams
+#
+########################################################################################### 
+def saveAllMatchesAllOppositionNWBT20(dir1):  
+    '''
+    Saves matches against all NWB T20 teams as dataframe and CSV for an IPL team
+    
+    Description
+    
+    This function saves all NWBT20 matches agaist all opposition as a single 
+    dataframe in the current directory
+    
+    Usage
+    
+    saveAllMatchesAllOppositionNWBT20(dir)
+    Arguments
+    
+    dir	
+    Directory to store saved matches
+    Value
+    
+    None
+    
+    Note
+    
+    Maintainer: Tinniam V Ganesh tvganesh.85@gmail.com
+    
+    Author(s)
+    
+    Tinniam V Ganesh
+    
+    References
+    
+    http://cricsheet.org/
+    https://gigadom.wordpress.com/
+
+    
+    See Also
+    
+    convertYaml2PandasDataframeT20
+    teamBattingScorecardMatch 
+    '''
+    teams = ["Derbyshire", "Durham", "Essex", "Glamorgan",
+             "Gloucestershire", "Hampshire", "Kent","Lancashire",
+             "Leicestershire", "Middlesex","Northamptonshire",
+             "Nottinghamshire","Somerset","Surrey","Sussex","Warwickshire",
+             "Worcestershire","Yorkshire"]
+    
+    for team in teams:
+                print("Team=",team)
+                getAllMatchesAllOpposition(team,dir=dir1,save=True)
+                time.sleep(2) #Sleep before  next save
