@@ -4783,7 +4783,7 @@ def rankIntlT20Batting(dir1):
     df=pd.DataFrame()
     for key in countries:
         val = countries[key] + "_details"
-        val= getTeamBattingDetails(key,dir=dir1, save=True)
+        val= getTeamBattingDetails(key,dir=dir1, save=False)
         df = pd.concat([df,val])
     df1=df.groupby('batsman').agg(['count','mean'])
     df1.columns = ['_'.join(col).strip() for col in df1.columns.values]
@@ -4814,7 +4814,7 @@ def rankIntlT20Bowling(dir1):
     df=pd.DataFrame()
     for key in countries:
         val = countries[key] + "_details"
-        val= getTeamBowlingDetails(key,dir=dir1, save=True)
+        val= getTeamBowlingDetails(key,dir=dir1, save=False)
         df = pd.concat([df,val])
     df1=df.groupby('bowler').agg(['count','mean'])
     df1.columns = ['_'.join(col).strip() for col in df1.columns.values]
@@ -4842,7 +4842,7 @@ def rankIPLT20Batting(dir1):
     df=pd.DataFrame()
     for key in iplTeams:
         val = iplTeams[key] + "_details"
-        val= getTeamBattingDetails(key,dir=dir1, save=True)
+        val= getTeamBattingDetails(key,dir=dir1, save=False)
         df = pd.concat([df,val])
     df1=df.groupby('batsman').agg(['count','mean'])
     df1.columns = ['_'.join(col).strip() for col in df1.columns.values]
@@ -4869,7 +4869,7 @@ def rankIPLT20Bowling(dir1):
     df=pd.DataFrame()
     for key in iplTeams:
         val = iplTeams[key] + "_details"
-        val= getTeamBowlingDetails(key,dir=dir1, save=True)
+        val= getTeamBowlingDetails(key,dir=dir1, save=False)
         df = pd.concat([df,val])
     df1=df.groupby('bowler').agg(['count','mean'])
     df1.columns = ['_'.join(col).strip() for col in df1.columns.values]
@@ -4897,7 +4897,7 @@ def rankNTBT20Batting(dir1):
     df=pd.DataFrame()
     for key in ntbTeams:
         val = ntbTeams[key] + "_details"
-        val= getTeamBattingDetails(key,dir=dir1, save=True)
+        val= getTeamBattingDetails(key,dir=dir1, save=False)
         df = pd.concat([df,val])
         
     df1=df.groupby('batsman').agg(['count','mean'])
@@ -4925,7 +4925,7 @@ def rankNTBT20Bowling(dir1):
     df=pd.DataFrame()
     for key in ntbTeams:
         val = ntbTeams[key] + "_details"
-        val= getTeamBowlingDetails(key,dir=dir1, save=True)
+        val= getTeamBowlingDetails(key,dir=dir1, save=False)
         df = pd.concat([df,val])
     df1=df.groupby('bowler').agg(['count','mean'])
     df1.columns = ['_'.join(col).strip() for col in df1.columns.values]
@@ -4952,7 +4952,7 @@ def rankBBLT20Batting(dir1):
     df=pd.DataFrame()
     for key in bbTteams:
         val = bbTteams[key] + "_details"
-        val= getTeamBattingDetails(key,dir=dir1, save=True)
+        val= getTeamBattingDetails(key,dir=dir1, save=False)
         df = pd.concat([df,val])
         
     df1=df.groupby('batsman').agg(['count','mean'])
@@ -4978,7 +4978,7 @@ def rankBBLT20Bowling(dir1):
     df=pd.DataFrame()
     for key in bbTteams:
         val = bbTteams[key] + "_details"
-        val= getTeamBowlingDetails(key,dir=dir1, save=True)
+        val= getTeamBowlingDetails(key,dir=dir1, save=False)
         df = pd.concat([df,val])
     df1=df.groupby('bowler').agg(['count','mean'])
     df1.columns = ['_'.join(col).strip() for col in df1.columns.values]
