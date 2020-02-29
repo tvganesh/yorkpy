@@ -272,14 +272,14 @@ def convertYaml2PandasDataframeT20(infile,source,dest):
     
     # Outcome - Tie  
     try: 
-        print("Here11")
+        
         df['result']=a['info']['outcome']['result']
         df['resultHow']=list(a['info']['outcome'].keys())[0]
         df['resultTeam'] = a['info']['outcome']['eliminator']
         print(a['info']['outcome']['result'])
         print(list(a['info']['outcome'].keys())[0])
         print(a['info']['outcome']['eliminator'])
-        print("Her2")
+        
     except:
          df['result']=0
          df['resultHow']=0
@@ -309,8 +309,10 @@ def convertYaml2PandasDataframeT20(infile,source,dest):
     # Rename column 'batsman' to runs as it signifies runs scored by batsman
     df=df.rename(columns={'batsman':'runs'})
     df=df.rename(columns={'striker':'batsman'}) 
-    
-    outfile=a['info']['teams'][0]+ '-' + a['info']['teams'][1] + '-' +a['info']['dates'][0].strftime('%Y-%m-%d') + '.csv'
+    if (type(a['info']['dates'][0]) == str):
+       outfile=a['info']['teams'][0]+ '-' + a['info']['teams'][1] + '-' +a['info']['dates'][0] + '.csv'
+    else:  
+        outfile=a['info']['teams'][0]+ '-' + a['info']['teams'][1] + '-' +a['info']['dates'][0].strftime('%Y-%m-%d') + '.csv'
     destFile=os.path.join(dest,outfile)
     print(destFile)
     df.to_csv(destFile,index=False)
@@ -505,11 +507,14 @@ def teamBattingScorecardMatch (match,theTeam):
     print(y1)
     
     '''
-    team=match.loc[match.team== theTeam]
+    scorecard=pd.DataFrame()
+    if(match.size != 0):
+      team=match.loc[match['team'] == theTeam]
+    else:
+      return(scorecard,-1)
     a1= getRuns(team)
     b1= getFours(team)
     c1= getSixes(team)
-    
     # Merge columns
     d1=pd.merge(a1, b1, how='outer', on='batsman')
     e=pd.merge(d1,c1,how='outer', on='batsman')
@@ -2944,7 +2949,7 @@ def getTeamBattingDetails(team,dir=".",save=False):
     t1 = '*' +  team +'*.csv'
     path= os.path.join(dir,t1)
     files = glob.glob(path) 
-    print(len(files))
+
     
     # Create an empty dataframe
     details = pd.DataFrame()
@@ -2953,8 +2958,10 @@ def getTeamBattingDetails(team,dir=".",save=False):
     for file in files:
           match=pd.read_csv(file)
         
-          scorecard,extras=teamBattingScorecardMatch(match,team)
           
+          scorecard,extras=teamBattingScorecardMatch(match,team)
+          if scorecard.empty:
+               continue
           # Filter out only the rows played by team
           match1 = match.loc[match.team==team]
        
@@ -3775,7 +3782,7 @@ def getTeamBowlingDetails (team,dir=".",save=False):
     t1 = '*' +  team +'*.csv'
     path= os.path.join(dir,t1)
     files = glob.glob(path) 
-    print(len(files))
+
     
     # Create an empty dataframe
     details = pd.DataFrame()
@@ -3783,7 +3790,10 @@ def getTeamBowlingDetails (team,dir=".",save=False):
     # Loop through all matches played by team
     for file in files:
           match=pd.read_csv(file)
-          team1=match.loc[match.team != team]
+          if(match.size != 0):
+              team1=match.loc[match.team != team]
+          else:
+              continue
 
           if len(team1) !=0:
               scorecard=teamBowlingPerDetails(team1)
@@ -3798,7 +3808,6 @@ def getTeamBowlingDetails (team,dir=".",save=False):
               pass # The team did not bowl
     if save==True:
          fileName = "./" + team + "-BowlingDetails.csv"
-         print(fileName)
          details.to_csv(fileName,index=False)
               
     return(details)
@@ -4749,3 +4758,233 @@ def saveAllMatchesAllOppositionNWBT20(dir1):
                 print("Team=",team)
                 getAllMatchesAllOpposition(team,dir=dir1,save=True)
                 time.sleep(2) #Sleep before  next save
+                
+##########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 28 Feb 2020
+# Function: rankIntlT20Batting
+# This function ranks Intl T20 batsman
+#
+###########################################################################################                
+
+def rankIntlT20Batting(dir1):      
+    countries ={"India":"india", "United States of America":"usa", "Canada":"canada", "United Arab Emirates":"uae",
+                "Afghanistan":"afghanistan", "West Indies":"westindies","Oman":"oman","Germany":"germany",
+                "Namibia":"namibia","Germany":"germany","Sri Lanka":"sl","Singapore":"singapore",
+                "Malaysia":"malaysia","South Africa": "sa","Netherlands":"netherlands",
+                "Zimbabwe":"zimbabwe","Pakistan":"pakistan","Scotland":"scotland","Kuwait":"kuwait",
+                "New Zealand":"nz","Vanuatu":"vanuatu","Papua New Guinea": "png","Australia":"aus",
+                "Irelaand":"ireland","England":"england","South Korea":"sk","Japan":"japan","Bangladesh":"bangladesh",
+                "Nepal":"nepal","Cayman Island":"cayman","Rwanda":"rwanda","Qatar":"qatar","Botswana":"botswana",
+                "Rwanda":"rwanda","Uganda":"uganda","Maldives":"maldives","Fiji":"fiji","Mozambique":"mozam",
+                "Hong Kong":"hk","Denmark":"denmark","Norway":"norway"
+                }
+    
+    df=pd.DataFrame()
+    for key in countries:
+        val = countries[key] + "_details"
+        val= getTeamBattingDetails(key,dir=dir1, save=True)
+        df = pd.concat([df,val])
+    df1=df.groupby('batsman').agg(['count','mean'])
+    df1.columns = ['_'.join(col).strip() for col in df1.columns.values]
+    df2 =df1[['runs_count','runs_mean','SR_mean']]
+    df3=df2[df2['runs_count']>40]
+    df4=df3.sort_values(['runs_mean','SR_mean'],ascending=False)
+    return(df4)
+    
+#########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 28 Feb 2020
+# Function: rankIntlT20Bowling
+# This function ranks Intl T20 bowlers
+#
+###########################################################################################   
+def rankIntlT20Bowling(dir1):
+    countries ={"India":"india", "United States of America":"usa", "Canada":"canada", "United Arab Emirates":"uae",
+                    "Afghanistan":"afghanistan", "West Indies":"westindies","Oman":"oman","Germany":"germany",
+                    "Namibia":"namibia","Germany":"germany","Sri Lanka":"sl","Singapore":"singapore",
+                    "Malaysia":"malaysia","South Africa": "sa","Netherlands":"netherlands",
+                    "Zimbabwe":"zimbabwe","Pakistan":"pakistan","Scotland":"scotland","Kuwait":"kuwait",
+                    "New Zealand":"nz","Vanuatu":"vanuatu","Papua New Guinea": "png","Australia":"aus",
+                    "Irelaand":"ireland","England":"england","South Korea":"sk","Japan":"japan","Bangladesh":"bangladesh",
+                    "Nepal":"nepal","Cayman Island":"cayman","Rwanda":"rwanda","Qatar":"qatar","Botswana":"botswana",
+                    "Rwanda":"rwanda","Uganda":"uganda","Maldives":"maldives","Fiji":"fiji","Mozambique":"mozam",
+                    "Hong Kong":"hk","Denmark":"denmark","Norway":"norway"
+                    }
+    df=pd.DataFrame()
+    for key in countries:
+        val = countries[key] + "_details"
+        val= getTeamBowlingDetails(key,dir=dir1, save=True)
+        df = pd.concat([df,val])
+    df1=df.groupby('bowler').agg(['count','mean'])
+    df1.columns = ['_'.join(col).strip() for col in df1.columns.values]
+    df2 =df1[['wicket_count','wicket_mean','econrate_mean']]
+    df3=df2[df2['wicket_count']>40]
+    df4=df3.sort_values(['wicket_mean','econrate_mean'],ascending=False)
+    return(df4)
+    
+#########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 28 Feb 2020
+# Function: rankIPLT20Batting
+# This function ranks IPL T20 batsmen
+#
+###########################################################################################
+
+def rankIPLT20Batting(dir1):      
+
+    iplTeams ={"Chennai Super Kings":"csk","Deccan Chargers":"dc","Delhi Daredevils":"dd",
+                  "Kings XI Punjab":"kxip", 'Kochi Tuskers Kerala':"kct","Kolkata Knight Riders":"kkr",
+                  "Mumbai Indians":"mi", "Pune Warriors":"pw","Rajasthan Royals":"rr",
+                  "Royal Challengers Bangalore":"rps","Sunrisers Hyderabad":"sh","Gujarat Lions":"gl",
+                  "Rising Pune Supergiants":"rps"}
+    
+    df=pd.DataFrame()
+    for key in iplTeams:
+        val = iplTeams[key] + "_details"
+        val= getTeamBattingDetails(key,dir=dir1, save=True)
+        df = pd.concat([df,val])
+    df1=df.groupby('batsman').agg(['count','mean'])
+    df1.columns = ['_'.join(col).strip() for col in df1.columns.values]
+    df2 =df1[['runs_count','runs_mean','SR_mean']]
+    df3=df2[df2['runs_count']>40]
+    df4=df3.sort_values(['runs_mean','SR_mean'],ascending=False)
+    return(df4)    
+
+#########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 28 Feb 2020
+# Function: rankIPLT20Bowling
+# This function ranks IPL T20 bowlers
+#
+###########################################################################################
+    
+def rankIPLT20Bowling(dir1):
+    iplTeams ={"Chennai Super Kings":"csk","Deccan Chargers":"dc","Delhi Daredevils":"dd",
+                  "Kings XI Punjab":"kxip", 'Kochi Tuskers Kerala':"kct","Kolkata Knight Riders":"kkr",
+                  "Mumbai Indians":"mi", "Pune Warriors":"pw","Rajasthan Royals":"rr",
+                  "Royal Challengers Bangalore":"rps","Sunrisers Hyderabad":"sh","Gujarat Lions":"gl",
+                  "Rising Pune Supergiants":"rps"}
+                    
+    df=pd.DataFrame()
+    for key in iplTeams:
+        val = iplTeams[key] + "_details"
+        val= getTeamBowlingDetails(key,dir=dir1, save=True)
+        df = pd.concat([df,val])
+    df1=df.groupby('bowler').agg(['count','mean'])
+    df1.columns = ['_'.join(col).strip() for col in df1.columns.values]
+    df2 =df1[['wicket_count','wicket_mean','econrate_mean']]
+    df3=df2[df2['wicket_count']>40]
+    df4=df3.sort_values(['wicket_mean','econrate_mean'],ascending=False)
+    return(df4)
+    
+#########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 28 Feb 2020
+# Function: rankNTBT20Batting
+# This function ranks NTB T20 batsmen
+#
+###########################################################################################
+    
+def rankNTBT20Batting(dir1):      
+
+    ntbTeams = {"Derbyshire":"der", "Durham":"dur", "Essex":"ess", "Glamorgan":"gla",
+             "Gloucestershire":"glo", "Hampshire":"ham", "Kent":"ken","Lancashire":"lan",
+             "Leicestershire":"lei", "Middlesex":"mid","Northamptonshire":"nor",
+             "Nottinghamshire":"not","Somerset":"som","Surrey":"sur","Sussex":"sus","Warwickshire":"war",
+             "Worcestershire":"wor","Yorkshire":"yor"}
+    
+    df=pd.DataFrame()
+    for key in ntbTeams:
+        val = ntbTeams[key] + "_details"
+        val= getTeamBattingDetails(key,dir=dir1, save=True)
+        df = pd.concat([df,val])
+        
+    df1=df.groupby('batsman').agg(['count','mean'])
+    df1.columns = ['_'.join(col).strip() for col in df1.columns.values]
+    df2 =df1[['runs_count','runs_mean','SR_mean']]
+    df3=df2[df2['runs_count']>10]
+    df4=df3.sort_values(['runs_mean','SR_mean'],ascending=False)
+    return(df4)  
+    
+#########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 28 Feb 2020
+# Function: rankNTBT20Bowling
+# This function ranks NTB T20 bowlers
+#
+###########################################################################################
+    
+def rankNTBT20Bowling(dir1):
+    ntbTeams = {"Derbyshire":"der", "Durham":"dur", "Essex":"ess", "Glamorgan":"gla",
+             "Gloucestershire":"glo", "Hampshire":"ham", "Kent":"ken","Lancashire":"lan",
+             "Leicestershire":"lei", "Middlesex":"mid","Northamptonshire":"nor",
+             "Nottinghamshire":"not","Somerset":"som","Surrey":"sur","Sussex":"sus","Warwickshire":"war",
+             "Worcestershire":"wor","Yorkshire":"yor"}
+                    
+    df=pd.DataFrame()
+    for key in ntbTeams:
+        val = ntbTeams[key] + "_details"
+        val= getTeamBowlingDetails(key,dir=dir1, save=True)
+        df = pd.concat([df,val])
+    df1=df.groupby('bowler').agg(['count','mean'])
+    df1.columns = ['_'.join(col).strip() for col in df1.columns.values]
+    df2 =df1[['wicket_count','wicket_mean','econrate_mean']]
+    df3=df2[df2['wicket_count']>10]
+    df4=df3.sort_values(['wicket_mean','econrate_mean'],ascending=False)
+    return(df4)
+
+#########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 28 Feb 2020
+# Function: rankBBLT20Batting
+# This function ranks BBL T20 batsmen
+#
+###########################################################################################
+
+def rankBBLT20Batting(dir1):      
+
+    bbTteams = {"Adelaide Strikers":"as", "Brisbane Heat":"bh", "Hobart Hurricanes":"hh",
+             "Melbourne Renegades":"mr", "Perth Scorchers":"ps", "Sydney Sixers":"ss",
+             "Sydney Thunder":"st"}
+    
+    
+    df=pd.DataFrame()
+    for key in bbTteams:
+        val = bbTteams[key] + "_details"
+        val= getTeamBattingDetails(key,dir=dir1, save=True)
+        df = pd.concat([df,val])
+        
+    df1=df.groupby('batsman').agg(['count','mean'])
+    df1.columns = ['_'.join(col).strip() for col in df1.columns.values]
+    df2 =df1[['runs_count','runs_mean','SR_mean']]
+    df3=df2[df2['runs_count']>20]
+    df4=df3.sort_values(['runs_mean','SR_mean'],ascending=False)
+    return(df4) 
+    
+#########################################################################################
+# Designed and developed by Tinniam V Ganesh
+# Date : 28 Feb 2020
+# Function: rankBBLT20Bowling
+# This function ranks BBL T20 bowlers
+#
+###########################################################################################
+    
+def rankBBLT20Bowling(dir1):
+    bbTteams = {"Adelaide Strikers":"as", "Brisbane Heat":"bh", "Hobart Hurricanes":"hh",
+             "Melbourne Renegades":"mr", "Perth Scorchers":"ps", "Sydney Sixers":"ss",
+             "Sydney Thunder":"st"}
+                    
+    df=pd.DataFrame()
+    for key in bbTteams:
+        val = bbTteams[key] + "_details"
+        val= getTeamBowlingDetails(key,dir=dir1, save=True)
+        df = pd.concat([df,val])
+    df1=df.groupby('bowler').agg(['count','mean'])
+    df1.columns = ['_'.join(col).strip() for col in df1.columns.values]
+    df2 =df1[['wicket_count','wicket_mean','econrate_mean']]
+
+    df3=df2[df2['wicket_count']>10]
+    df4=df3.sort_values(['wicket_mean','econrate_mean'],ascending=False)
+    return(df4)
+    
