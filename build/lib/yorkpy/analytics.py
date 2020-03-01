@@ -4790,6 +4790,7 @@ def rankIntlT20Batting(dir1):
     df2 =df1[['runs_count','runs_mean','SR_mean']]
     df3=df2[df2['runs_count']>40]
     df4=df3.sort_values(['runs_mean','SR_mean'],ascending=False)
+    df4.columns=['matches','runs_mean','SR_mean']
     return(df4)
     
 #########################################################################################
@@ -4821,6 +4822,7 @@ def rankIntlT20Bowling(dir1):
     df2 =df1[['wicket_count','wicket_mean','econrate_mean']]
     df3=df2[df2['wicket_count']>40]
     df4=df3.sort_values(['wicket_mean','econrate_mean'],ascending=False)
+    df4.columns=['matches','wicket_mean','econrate_mean']
     return(df4)
     
 #########################################################################################
@@ -4849,6 +4851,7 @@ def rankIPLT20Batting(dir1):
     df2 =df1[['runs_count','runs_mean','SR_mean']]
     df3=df2[df2['runs_count']>40]
     df4=df3.sort_values(['runs_mean','SR_mean'],ascending=False)
+    df4.columns=['matches','runs_mean','SR_mean']
     return(df4)    
 
 #########################################################################################
@@ -4876,6 +4879,7 @@ def rankIPLT20Bowling(dir1):
     df2 =df1[['wicket_count','wicket_mean','econrate_mean']]
     df3=df2[df2['wicket_count']>40]
     df4=df3.sort_values(['wicket_mean','econrate_mean'],ascending=False)
+    df4.columns=['matches','wicket_mean','econrate_mean']
     return(df4)
     
 #########################################################################################
@@ -4905,6 +4909,7 @@ def rankNTBT20Batting(dir1):
     df2 =df1[['runs_count','runs_mean','SR_mean']]
     df3=df2[df2['runs_count']>10]
     df4=df3.sort_values(['runs_mean','SR_mean'],ascending=False)
+    df4.columns=['matches','runs_mean','SR_mean']
     return(df4)  
     
 #########################################################################################
@@ -4932,6 +4937,7 @@ def rankNTBT20Bowling(dir1):
     df2 =df1[['wicket_count','wicket_mean','econrate_mean']]
     df3=df2[df2['wicket_count']>10]
     df4=df3.sort_values(['wicket_mean','econrate_mean'],ascending=False)
+    df4.columns=['matches','wicket_mean','econrate_mean']
     return(df4)
 
 #########################################################################################
@@ -4960,6 +4966,7 @@ def rankBBLT20Batting(dir1):
     df2 =df1[['runs_count','runs_mean','SR_mean']]
     df3=df2[df2['runs_count']>20]
     df4=df3.sort_values(['runs_mean','SR_mean'],ascending=False)
+    df4.columns=['matches','runs_mean','SR_mean']
     return(df4) 
     
 #########################################################################################
@@ -4986,5 +4993,6 @@ def rankBBLT20Bowling(dir1):
 
     df3=df2[df2['wicket_count']>10]
     df4=df3.sort_values(['wicket_mean','econrate_mean'],ascending=False)
+    df4.columns=['matches','wicket_mean','econrate_mean']
     return(df4)
     
