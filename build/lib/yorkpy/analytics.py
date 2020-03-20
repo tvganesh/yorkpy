@@ -694,7 +694,7 @@ def teamBowlingScorecardMatch (match,theTeam):
 
 ########################################################################################### 
 
-def teamBatsmenPartnershipMatch(match,theTeam,opposition,plot=True):
+def teamBatsmenPartnershipMatch(match,theTeam,opposition,plot=True,savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Team batting partnerships of batsmen in a match
 
@@ -715,6 +715,12 @@ def teamBatsmenPartnershipMatch(match,theTeam,opposition,plot=True):
     The opposition team
     plot	
     If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     df The data frame of the batsmen partnetships
@@ -758,7 +764,10 @@ def teamBatsmenPartnershipMatch(match,theTeam,opposition,plot=True):
          horizontalalignment='center',
          verticalalignment='center',
          )
-        plt.show()
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
         plt.gcf().clear()
     else:
         df3=df2.groupby(['batsman','non_striker']).sum().reset_index(inplace=False)
@@ -773,7 +782,7 @@ def teamBatsmenPartnershipMatch(match,theTeam,opposition,plot=True):
 
 ########################################################################################### 
         
-def teamBatsmenVsBowlersMatch(match,theTeam,opposition, plot=True):
+def teamBatsmenVsBowlersMatch(match,theTeam,opposition, plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Team batsmen against bowlers in a match
 
@@ -793,7 +802,13 @@ def teamBatsmenVsBowlersMatch(match,theTeam,opposition, plot=True):
     opposition	
     The opposition team
     plot	
-    If plot=TRUE then a plot is created otherwise a data frame is returned
+    If plot=TRUE then a plot is created otherwise a data frame is return
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     b The data frame of the batsmen vs bowlers performance
@@ -836,7 +851,10 @@ def teamBatsmenVsBowlersMatch(match,theTeam,opposition, plot=True):
          horizontalalignment='center',
          verticalalignment='center',
          )
-        plt.show()
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
         plt.gcf().clear()
     else:
         df3=df2.groupby(['batsman','bowler']).sum().reset_index(inplace=False)
@@ -851,7 +869,7 @@ def teamBatsmenVsBowlersMatch(match,theTeam,opposition, plot=True):
 
 ###########################################################################################
         
-def teamBowlingWicketKindMatch(match,theTeam,opposition, plot=True):
+def teamBowlingWicketKindMatch(match,theTeam,opposition, plot=True,savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Compute and plot the wicket kinds by bowlers in match
     
@@ -872,6 +890,12 @@ def teamBowlingWicketKindMatch(match,theTeam,opposition, plot=True):
     The opposition team
     plot	
     If plot= TRUE the dataframe will be plotted else a data frame will be returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None or data fame A data frame with the bowling performance in alll matches against all oppositions
@@ -917,7 +941,10 @@ def teamBowlingWicketKindMatch(match,theTeam,opposition, plot=True):
          horizontalalignment='center',
          verticalalignment='center',
          )
-        plt.show()
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile))
+        else:
+            plt.show()
         plt.gcf().clear()
     else:
         # Find the different types of wickets for each bowler
@@ -933,7 +960,7 @@ def teamBowlingWicketKindMatch(match,theTeam,opposition, plot=True):
 
 ###########################################################################################
         
-def teamBowlingWicketMatch(match,theTeam,opposition, plot=True):
+def teamBowlingWicketMatch(match,theTeam,opposition, plot=True,savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Compute and plot wickets by bowlers in match
     
@@ -954,6 +981,12 @@ def teamBowlingWicketMatch(match,theTeam,opposition, plot=True):
     The opposition team
     plot	
     If plot= TRUE the dataframe will be plotted else a data frame will be returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None or data fame A data frame with the bowling performance in alll matches against all oppositions
@@ -1000,7 +1033,10 @@ def teamBowlingWicketMatch(match,theTeam,opposition, plot=True):
          horizontalalignment='center',
          verticalalignment='center',
          )
-        plt.show()
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
         plt.gcf().clear()
     else:
         # Find the different types of wickets for each bowler
@@ -1016,7 +1052,7 @@ def teamBowlingWicketMatch(match,theTeam,opposition, plot=True):
 
 ###########################################################################################
         
-def teamBowlersVsBatsmenMatch (match,theTeam,opposition, plot=True):
+def teamBowlersVsBatsmenMatch (match,theTeam,opposition, plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Team bowlers vs batsmen in a match
 
@@ -1037,6 +1073,12 @@ def teamBowlersVsBatsmenMatch (match,theTeam,opposition, plot=True):
     The opposition team
     plot	
     This parameter specifies if a plot is required, If plot=FALSE then a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None or dataframe If plot=TRUE there is no return. If plot=TRUE then the dataframe is returned
@@ -1077,7 +1119,10 @@ def teamBowlersVsBatsmenMatch (match,theTeam,opposition, plot=True):
          horizontalalignment='center',
          verticalalignment='center',
          )
-        plt.show()
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
         plt.gcf().clear()
     else:
         df3=df2.groupby(['batsman','bowler']).sum().reset_index(inplace=False)
@@ -1091,7 +1136,7 @@ def teamBowlersVsBatsmenMatch (match,theTeam,opposition, plot=True):
 #
 ###########################################################################################
         
-def matchWormChart(match,team1,team2):
+def matchWormChart(match,team1,team2,plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Plot the match worm graph
 
@@ -1110,6 +1155,14 @@ def matchWormChart(match,team1,team2):
     The 1st team of the match
     team2	
     the 2nd team in the match
+    plot	
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     none
@@ -1163,7 +1216,11 @@ def matchWormChart(match,team1,team2):
          horizontalalignment='center',
          verticalalignment='center',
          )
-    plt.show()
+    if plot == True:
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
     plt.gcf().clear()
 
 ##########################################################################################
@@ -1174,7 +1231,7 @@ def matchWormChart(match,team1,team2):
 #
 ###########################################################################################
     
-def getAllMatchesBetweenTeams(team1,team2,dir=".",save=False):
+def getAllMatchesBetweenTeams(team1,team2,dir=".",save=False,odir="."):
     '''
     Get data on all matches between 2 opposing teams
     
@@ -1235,7 +1292,8 @@ def getAllMatchesBetweenTeams(team1,team2,dir=".",save=False):
             df=pd.concat([df,df1])    
         if save==True:
             dest= team1 +'-' + team2 + '-allMatches.csv'    
-            df.to_csv(dest)
+            output=os.path.join(odir,dest)
+            df.to_csv(output)
         else:
            return(df) 
     
@@ -1247,7 +1305,7 @@ def getAllMatchesBetweenTeams(team1,team2,dir=".",save=False):
 #
 ###########################################################################################
 
-def saveAllMatchesBetween2IPLTeams(dir1):  
+def saveAllMatchesBetween2IPLTeams(dir1,odir="."):  
     '''
     Saves all matches between 2 IPL teams as dataframe
     Description
@@ -1294,7 +1352,7 @@ def saveAllMatchesBetween2IPLTeams(dir1):
         for team2 in teams:
             if team1 != team2:
                 print("Team1=",team1,"team2=", team2)
-                getAllMatchesBetweenTeams(team1,team2,dir=dir1,save=True)
+                getAllMatchesBetweenTeams(team1,team2,dir=dir1,save=True,odir=odir)
                 time.sleep(2) #Sleep before  next save   
                 
     return    
@@ -1387,7 +1445,7 @@ def teamBatsmenPartnershiOppnAllMatches(matches,theTeam,report="summary",top=5):
 #
 ###########################################################################################       
     
-def teamBatsmenPartnershipOppnAllMatchesChart(matches,main,opposition,plot=True,top=5,partnershipRuns=20):
+def teamBatsmenPartnershipOppnAllMatchesChart(matches,main,opposition,plot=True,top=5,partnershipRuns=20,avePic=False, dir1=".",picFile="pic1.png"):
     '''
     Plot of team partnership in all IPL matches against an opposition
     
@@ -1413,6 +1471,12 @@ def teamBatsmenPartnershipOppnAllMatchesChart(matches,main,opposition,plot=True,
     The number of players from the top to be included in chart
     partnershipRuns
     The minimum number of partnership runs to include for the chart
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None or partnerships
@@ -1468,8 +1532,11 @@ def teamBatsmenPartnershipOppnAllMatchesChart(matches,main,opposition,plot=True,
        plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5),fontsize=8)
        plt.title('Partnership runs between ' + main + '-' + opposition)
        plt.xlabel('Batsman')
-       plt.ylabel('Partnership runs')   
-       plt.show()
+       plt.ylabel('Partnership runs')  
+       if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+       else:
+            plt.show()
        plt.gcf().clear()
     else:
         return(df7)
@@ -1482,7 +1549,7 @@ def teamBatsmenPartnershipOppnAllMatchesChart(matches,main,opposition,plot=True,
 #
 ###########################################################################################    
         
-def teamBatsmenVsBowlersOppnAllMatches(matches,main,opposition,plot=True,top=5,runsScored=20):
+def teamBatsmenVsBowlersOppnAllMatches(matches,main,opposition,plot=True,top=5,runsScored=20,savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Description
 
@@ -1505,6 +1572,12 @@ def teamBatsmenVsBowlersOppnAllMatches(matches,main,opposition,plot=True,top=5,r
     The number of players to be plotted or returned as a dataframe. The default is 5
     runsScored
     The cutfoff limit for runs scored for runs scored against bowler
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None or dataframe
@@ -1555,7 +1628,10 @@ def teamBatsmenVsBowlersOppnAllMatches(matches,main,opposition,plot=True,top=5,r
         plt.title('Runs against bowlers ' + main + '-' + opposition)
         plt.xlabel('Batsman')
         plt.ylabel('Runs scored') 
-        plt.show()
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
         plt.gcf().clear()
     else:
         return(df7)
@@ -1704,7 +1780,7 @@ def teamBowlingScorecardOppnAllMatches(matches,main,opposition):
 #
 ########################################################################################### 
     
-def teamBowlingWicketKindOppositionAllMatches(matches,main,opposition,plot=True,top=5,wickets=2):
+def teamBowlingWicketKindOppositionAllMatches(matches,main,opposition,plot=True,top=5,wickets=2,savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Team bowlers wicket kind against an opposition in all matches
     
@@ -1730,6 +1806,12 @@ def teamBowlingWicketKindOppositionAllMatches(matches,main,opposition,plot=True,
     The top number of players to be considered
     wickets
     The minimum number of wickets as cutoff
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None or dataframe The return depends on the value of the plot
@@ -1783,7 +1865,10 @@ def teamBowlingWicketKindOppositionAllMatches(matches,main,opposition,plot=True,
         plt.title('Wicker kind by bowlers of ' + main + '-' + opposition)
         plt.xlabel('Bowler')
         plt.ylabel('Total wickets') 
-        plt.show()
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
         plt.gcf().clear()
     else:
         return(df7)
@@ -1795,7 +1880,7 @@ def teamBowlingWicketKindOppositionAllMatches(matches,main,opposition,plot=True,
 # This function plots the performance of the bowlers against batsmen
 #
 ########################################################################################### 
-def teamBowlersVsBatsmenOppnAllMatches(matches,main,opposition,plot=True,top=5,runsConceded=10):
+def teamBowlersVsBatsmenOppnAllMatches(matches,main,opposition,plot=True,top=5,runsConceded=10, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Team bowlers vs batsmen against an opposition in all matches
 
@@ -1822,6 +1907,11 @@ def teamBowlersVsBatsmenOppnAllMatches(matches,main,opposition,plot=True,top=5,r
     The number of rows to be returned. 5 by default
     runsConceded
     The minimum numer runs to use as cutoff
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     dataframe The dataframe with all performances
@@ -1873,7 +1963,10 @@ def teamBowlersVsBatsmenOppnAllMatches(matches,main,opposition,plot=True,top=5,r
         plt.title('Wicker kind by bowlers of ' + main + '-' + opposition)
         plt.xlabel('Bowler')
         plt.ylabel('Total runs') 
-        plt.show()
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
         plt.gcf().clear()
     else:
         return(df7)
@@ -1885,7 +1978,7 @@ def teamBowlersVsBatsmenOppnAllMatches(matches,main,opposition,plot=True,top=5,r
 # This function plots the number of wins and losses in teams
 #
 ########################################################################################### 
-def plotWinLossBetweenTeams(matches,team1,team2):
+def plotWinLossBetweenTeams(matches,team1,team2,plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Plot wins for each team
     
@@ -1905,6 +1998,14 @@ def plotWinLossBetweenTeams(matches,team1,team2):
     The 1st team
     team2
     The 2nd team
+    plot	
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None
@@ -1936,7 +2037,11 @@ def plotWinLossBetweenTeams(matches,team1,team2):
     plt.xlabel('Winner')
     plt.ylabel('Number')
     plt.title("Wins vs losses " +  team1 + "-"+ team2)
-    plt.show()
+    if(plot==True):
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
     plt.gcf().clear()
     return
     
@@ -1948,7 +2053,7 @@ def plotWinLossBetweenTeams(matches,team1,team2):
 # This function plots how the win for the team was whether by runs or wickets
 #
 ########################################################################################### 
-def plotWinsByRunOrWickets(matches,team1):
+def plotWinsByRunOrWickets(matches,team1,plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
 
     Plot whether the wins for the team was by runs or wickets
@@ -1968,6 +2073,15 @@ def plotWinsByRunOrWickets(matches,team1):
     
     team1
     The team for which the plot has to be done
+    
+    plot	
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None
@@ -2001,6 +2115,11 @@ def plotWinsByRunOrWickets(matches,team1):
     plt.xlabel('Win Type - Runs or wickets')
     plt.ylabel('Number')
     plt.title("Win type for team -" +  team1 )
+    if(plot==True):
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
     plt.show()
     plt.gcf().clear()
     return
@@ -2012,7 +2131,7 @@ def plotWinsByRunOrWickets(matches,team1):
 # This function plots the number of wins/losses for team based on its toss decision
 #
 ########################################################################################### 
-def plotWinsbyTossDecision(matches,team1,tossDecision='bat'):
+def plotWinsbyTossDecision(matches,team1,tossDecision='bat', plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
    Plot whether the wins for the team was by runs or wickets
     
@@ -2031,6 +2150,16 @@ def plotWinsbyTossDecision(matches,team1,tossDecision='bat'):
     
     team1
     The team for which the plot has to be done
+
+    plot	
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
+    
     Value
     
     None
@@ -2063,7 +2192,11 @@ def plotWinsbyTossDecision(matches,team1,tossDecision='bat'):
     plt.xlabel('Winner ' + 'when toss decision was to :' + tossDecision)
     plt.ylabel('Number')
     plt.title('Wins vs losses for ' + team1 + ' when toss decision was to ' + tossDecision )
-    plt.show()
+    if(plot==True):
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
     plt.gcf().clear()
     return
 
@@ -2074,7 +2207,7 @@ def plotWinsbyTossDecision(matches,team1,tossDecision='bat'):
 # This function gets all the matches between a IPL team and all opposition
 #
 ########################################################################################### 
-def getAllMatchesAllOpposition(team1,dir=".",save=False):
+def getAllMatchesAllOpposition(team1,dir=".",save=False,odir="."):
     '''
     Get data on all matches against all opposition
     
@@ -2136,7 +2269,8 @@ def getAllMatchesAllOpposition(team1,dir=".",save=False):
             df=pd.concat([df,df1])    
         if save==True:
             dest= team1 + '-allMatchesAllOpposition.csv'    
-            df.to_csv(dest)
+            output=os.path.join(odir,dest)
+            df.to_csv(output)
         else:
            return(df)
            
@@ -2147,7 +2281,7 @@ def getAllMatchesAllOpposition(team1,dir=".",save=False):
 # This function saves all the matches between all IPL team and all opposition
 #
 ########################################################################################### 
-def saveAllMatchesAllOppositionIPLT20(dir1):  
+def saveAllMatchesAllOppositionIPLT20(dir1,odir="."):  
     '''
     Saves matches against all IPL teams as dataframe and CSV for an IPL team
     
@@ -2194,7 +2328,7 @@ def saveAllMatchesAllOppositionIPLT20(dir1):
     
     for team in teams:
                 print("Team=",team)
-                getAllMatchesAllOpposition(team,dir=dir1,save=True)
+                getAllMatchesAllOpposition(team,dir=dir1,save=True,odir=odir)
                 time.sleep(2) #Sleep before  next save
                 
 ##########################################################################################
@@ -2279,7 +2413,7 @@ def teamBatsmenPartnershiAllOppnAllMatches(matches,theTeam,report="summary",top=
 # This function computes and plots the partnerships of an IPK team against all other IPL teams
 #
 ########################################################################################### 
-def teamBatsmenPartnershipAllOppnAllMatchesChart(matches,main,plot=True,top=5,partnershipRuns=20):
+def teamBatsmenPartnershipAllOppnAllMatchesChart(matches,main,plot=True,top=5,partnershipRuns=20, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Plots team batting partnership all matches all oppositions
     
@@ -2305,6 +2439,12 @@ def teamBatsmenPartnershipAllOppnAllMatchesChart(matches,main,plot=True,top=5,pa
     The number of players from the top to be included in chart
     partnershipRuns
     The minimum number of partnership runs to include for the chart
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None or partnerships
@@ -2353,8 +2493,12 @@ def teamBatsmenPartnershipAllOppnAllMatchesChart(matches,main,plot=True,top=5,pa
        plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5),fontsize=8)
        plt.title('Batting partnerships  of' + main + 'against all teams')
        plt.xlabel('Batsman')
-       plt.ylabel('Partnership runs')   
-       plt.show()
+       plt.ylabel('Partnership runs') 
+       if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+       else:
+            plt.show()
+
        plt.gcf().clear()
     else:
         return(df7)
@@ -2367,7 +2511,7 @@ def teamBatsmenPartnershipAllOppnAllMatchesChart(matches,main,plot=True,top=5,pa
 # of an IPL team against all other teams
 #
 ########################################################################################### 
-def teamBatsmenVsBowlersAllOppnAllMatches(matches,main,plot=True,top=5,runsScored=20):
+def teamBatsmenVsBowlersAllOppnAllMatches(matches,main,plot=True,top=5,runsScored=20, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Report of team batsmen vs bowlers in all matches all oppositions
 
@@ -2390,6 +2534,12 @@ def teamBatsmenVsBowlersAllOppnAllMatches(matches,main,plot=True,top=5,runsScore
     The number of top batsmen to be included
     runsScored
     The total runs scoed by batsmen
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     The data frame of the batsman and the runs against bowlers
@@ -2437,7 +2587,10 @@ def teamBatsmenVsBowlersAllOppnAllMatches(matches,main,plot=True,top=5,runsScore
         plt.title('Runs by ' + main + ' against all T20 bowlers')
         plt.xlabel('Batsman')
         plt.ylabel('Runs scored') 
-        plt.show()
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
         plt.gcf().clear()
     else:
         return(df7)
@@ -2572,7 +2725,7 @@ def teamBowlingScorecardAllOppnAllMatches(matches,main):
 # IPL teams
 #
 ###########################################################################################
-def teamBowlingWicketKindAllOppnAllMatches(matches,main,plot=True,top=5,wickets=2):
+def teamBowlingWicketKindAllOppnAllMatches(matches,main,plot=True,top=5,wickets=2,savePic=False, dir1=".",picFile="pic1.png"):
     df1=matches.loc[matches.team== main]
     df2= df1[['bowler','kind','player_out']]
 
@@ -2603,7 +2756,10 @@ def teamBowlingWicketKindAllOppnAllMatches(matches,main,plot=True,top=5,wickets=
         plt.title('Wicker kind by bowlers of ' + main + ' against all T20 teams')
         plt.xlabel('Bowler')
         plt.ylabel('Total wickets') 
-        plt.show()
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
         plt.gcf().clear()
     else:
         return(df7)
@@ -2616,7 +2772,7 @@ def teamBowlingWicketKindAllOppnAllMatches(matches,main,plot=True,top=5,wickets=
 # IPL teams
 #
 ###########################################################################################
-def teamBowlersVsBatsmenAllOppnAllMatches(matches,main,plot=True,top=5,runsConceded=10):
+def teamBowlersVsBatsmenAllOppnAllMatches(matches,main,plot=True,top=5,runsConceded=10,savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Compute team bowlers vs batsmen all opposition all matches
     
@@ -2639,6 +2795,12 @@ def teamBowlersVsBatsmenAllOppnAllMatches(matches,main,plot=True,top=5,runsConce
     The top number of bowlers in result
     runsConded
     The number of runs conceded by bowlers
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     dataframe The dataframe with all performances
@@ -2682,8 +2844,11 @@ def teamBowlersVsBatsmenAllOppnAllMatches(matches,main,plot=True,top=5,runsConce
         plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5),fontsize=8)
         plt.title('Performance of' + main  + 'Bowlers vs Batsmen ' )
         plt.xlabel('Bowler')
-        plt.ylabel('Total runs') 
-        plt.show()
+        plt.ylabel('Total runs')
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
         plt.gcf().clear()
     else:
         return(df7)
@@ -2696,7 +2861,7 @@ def teamBowlersVsBatsmenAllOppnAllMatches(matches,main,plot=True,top=5,runsConce
 # IPL teams
 #
 ###########################################################################################
-def plotWinLossByTeamAllOpposition(matches, team1, plot='summary'):
+def plotWinLossByTeamAllOpposition(matches, team1, plot='summary',savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Plot wins for each team
     
@@ -2716,6 +2881,12 @@ def plotWinLossByTeamAllOpposition(matches, team1, plot='summary'):
     The 1st team
     plot
     Summary or detailed
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None
@@ -2743,7 +2914,10 @@ def plotWinLossByTeamAllOpposition(matches, team1, plot='summary'):
         plt.xlabel('Outcome')
         plt.ylabel('Number')
         plt.title("Wins vs losses(summary) of " +  team1 + ' against all Opposition' )
-        plt.show()
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
         plt.gcf().clear()
     elif plot=="detailed" : 
         #Plot breakup by team
@@ -2756,7 +2930,10 @@ def plotWinLossByTeamAllOpposition(matches, team1, plot='summary'):
         plt.ylabel('Number')
         plt.title("Wins vs losses(detailed) of " +  team1 + ' against all Opposition' )
         ax.set_xticklabels(ax.get_xticklabels(),rotation=60,fontsize=6)
-        plt.show()
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
         plt.gcf().clear()
     else:
         print("Unknown option")
@@ -2769,7 +2946,7 @@ def plotWinLossByTeamAllOpposition(matches, team1, plot='summary'):
 # IPL teams
 #
 ###########################################################################################
-def plotWinsByRunOrWicketsAllOpposition(matches,team1):
+def plotWinsByRunOrWicketsAllOpposition(matches,team1,plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Plot whether the wins for the team was by runs or wickets
     
@@ -2788,6 +2965,12 @@ def plotWinsByRunOrWicketsAllOpposition(matches,team1):
     
     team1
     The team for which the plot has to be done
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None
@@ -2814,7 +2997,10 @@ def plotWinsByRunOrWicketsAllOpposition(matches,team1):
     plt.xlabel('Win Type - Runs or wickets')
     plt.ylabel('Number')
     plt.title("Win type for team -" +  team1 + ' against all opposition' )
-    plt.show()
+    if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+    else:
+            plt.show()
     plt.gcf().clear()
 ##########################################################################################
 # Designed and developed by Tinniam V Ganesh
@@ -2824,7 +3010,7 @@ def plotWinsByRunOrWicketsAllOpposition(matches,team1):
 # IPL teams
 #
 ###########################################################################################
-def plotWinsbyTossDecisionAllOpposition(matches,team1,tossDecision='bat',plot="summary"):
+def plotWinsbyTossDecisionAllOpposition(matches,team1,tossDecision='bat',plot="summary", savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Plot whether the wins for the team was by runs or wickets
     
@@ -2846,6 +3032,13 @@ def plotWinsbyTossDecisionAllOpposition(matches,team1,tossDecision='bat',plot="s
     
     plot
     'summary' or 'detailed'
+    
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None
@@ -2881,7 +3074,10 @@ def plotWinsbyTossDecisionAllOpposition(matches,team1,tossDecision='bat',plot="s
         plt.xlabel('Outcome')
         plt.ylabel('Number')
         plt.title("Wins vs losses(summary) against all opposition when toss decision was to " + tossDecision + ' for ' +  team1 )
-        plt.show()
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()        
         plt.gcf().clear()
     elif plot=="detailed" : 
         #Plot breakup by team        
@@ -2894,6 +3090,10 @@ def plotWinsbyTossDecisionAllOpposition(matches,team1,tossDecision='bat',plot="s
         plt.ylabel('Number')
         plt.title('Wins vs losses(detailed) against all opposition for ' + team1 + ' when toss decision was to ' + tossDecision )
         ax.set_xticklabels(ax.get_xticklabels(),rotation=60, fontsize=6)
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()        
         plt.show()
         plt.gcf().clear()
         return
@@ -2901,13 +3101,13 @@ def plotWinsbyTossDecisionAllOpposition(matches,team1,tossDecision='bat',plot="s
 ##########################################################################################
 # Designed and developed by Tinniam V Ganesh
 # Date : 24 Feb 2019
-# Function: getTeamBattingDetails
+# Function: Details
 # This function computes the batting details of a team
 # IPL teams
 #
 ###########################################################################################        
         
-def getTeamBattingDetails(team,dir=".",save=False):
+def getTeamBattingDetails(team,dir=".",save=False,odir="."):
     '''
     Description
     
@@ -2990,7 +3190,8 @@ def getTeamBattingDetails(team,dir=".",save=False):
  
     if save==True:
               fileName = "./" + team + "-BattingDetails.csv"
-              details.to_csv(fileName)
+              output=os.path.join(odir,fileName)
+              details.to_csv(output)
              
     return(details)
     
@@ -3066,7 +3267,7 @@ def getBatsmanDetails(team, name,dir="."):
 # This function plots runs vs deliveries for the batsman
 #
 ###########################################################################################  
-def batsmanRunsVsDeliveries(df,name= "A Late Cut"):
+def batsmanRunsVsDeliveries(df,name= "A Late Cut",plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Runs versus deliveries faced
     
@@ -3083,6 +3284,14 @@ def batsmanRunsVsDeliveries(df,name= "A Late Cut"):
     Data frame
     name	
     Name of batsman
+    plot	
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None
@@ -3120,7 +3329,11 @@ def batsmanRunsVsDeliveries(df,name= "A Late Cut"):
     plt.ylabel('Runs',fontsize=8)
     atitle=name + "- Runs vs balls faced"
     plt.title(atitle,fontsize=8)
-    plt.show()
+    if(plot==True):
+       if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+       else:
+            plt.show()
     plt.gcf().clear()
     return
 
@@ -3133,7 +3346,7 @@ def batsmanRunsVsDeliveries(df,name= "A Late Cut"):
 #
 ###########################################################################################  
     
-def batsmanFoursSixes(df,name= "A Leg Glance"):
+def batsmanFoursSixes(df,name= "A Leg Glance", plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Description
     
@@ -3148,6 +3361,13 @@ def batsmanFoursSixes(df,name= "A Leg Glance"):
     Data frame
     name	
     Name of batsman
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None
@@ -3210,7 +3430,11 @@ def batsmanFoursSixes(df,name= "A Leg Glance"):
     atitle=name + "- Total runs, fours and sixes"
     plt.title(atitle,fontsize=8)
     plt.legend(loc="upper left")
-    plt.show()
+    if(plot==True):
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
     plt.gcf().clear()
     return
      
@@ -3221,7 +3445,7 @@ def batsmanFoursSixes(df,name= "A Leg Glance"):
 # This function plots the batsman dismissals
 #
 ###########################################################################################       
-def batsmanDismissals(df,name="A Leg Glance"):
+def batsmanDismissals(df,name="A Leg Glance",plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Description
     
@@ -3236,6 +3460,14 @@ def batsmanDismissals(df,name="A Leg Glance"):
     Data frame
     name	
     Name of batsman
+    plot	
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None
@@ -3274,7 +3506,11 @@ def batsmanDismissals(df,name="A Leg Glance"):
     plt.pie(df2['count'], labels=df2['dismissals'],autopct='%.1f%%')
     atitle= name + "-Dismissals"
     plt.title(atitle,fontsize=8)
-    plt.show()
+    if(plot==True):
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
     plt.gcf().clear()
     return
     
@@ -3286,7 +3522,7 @@ def batsmanDismissals(df,name="A Leg Glance"):
 # 
 #
 ###########################################################################################  
-def batsmanRunsVsStrikeRate (df,name= "A Late Cut"):
+def batsmanRunsVsStrikeRate (df,name= "A Late Cut", plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Description
     
@@ -3301,6 +3537,14 @@ def batsmanRunsVsStrikeRate (df,name= "A Late Cut"):
     Data frame
     name	
     Name of batsman
+    plot	
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None
@@ -3339,7 +3583,11 @@ def batsmanRunsVsStrikeRate (df,name= "A Late Cut"):
     plt.ylabel('Strike Rate',fontsize=8)
     atitle=name + "- Runs vs Strike rate"
     plt.title(atitle,fontsize=8)
-    plt.show()
+    if(plot==True):
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
     plt.gcf().clear()
     return
 
@@ -3364,7 +3612,7 @@ def movingaverage(interval, window_size):
 # 
 #
 ###########################################################################################      
-def batsmanMovingAverage(df, name):
+def batsmanMovingAverage(df, name, plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Description
     
@@ -3379,6 +3627,14 @@ def batsmanMovingAverage(df, name):
     Data frame
     name	
     Name of batsman
+    plot	
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None
@@ -3419,7 +3675,11 @@ def batsmanMovingAverage(df, name):
     plt.xticks(rotation=90)
     atitle = name +  "-Moving average of runs"
     plt.title(atitle,fontsize=8)
-    plt.show()
+    if(plot==True):
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
     plt.gcf().clear()
     return
 ##########################################################################################
@@ -3430,7 +3690,7 @@ def batsmanMovingAverage(df, name):
 # 
 #
 ###########################################################################################  
-def batsmanCumulativeAverageRuns(df,name="A Leg Glance"):
+def batsmanCumulativeAverageRuns(df,name="A Leg Glance",plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Batsman's cumulative average runs
     
@@ -3447,6 +3707,14 @@ def batsmanCumulativeAverageRuns(df,name="A Leg Glance"):
     Data frame
     name	
     Name of batsman
+    plot	
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None
@@ -3484,7 +3752,11 @@ def batsmanCumulativeAverageRuns(df,name="A Leg Glance"):
     plt.xticks(rotation=90)
     atitle = name +  "-Cumulative Average Runs vs matches"
     plt.title(atitle,fontsize=8)
-    plt.show()
+    if(plot==True):
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
     plt.gcf().clear()
     return
 
@@ -3496,7 +3768,7 @@ def batsmanCumulativeAverageRuns(df,name="A Leg Glance"):
 # 
 #
 ###########################################################################################  
-def batsmanCumulativeStrikeRate(df,name="A Leg Glance"):
+def batsmanCumulativeStrikeRate(df,name="A Leg Glance",plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Description
     
@@ -3511,6 +3783,14 @@ def batsmanCumulativeStrikeRate(df,name="A Leg Glance"):
     Data frame
     name	
     Name of batsman
+    plot	
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None
@@ -3549,7 +3829,11 @@ def batsmanCumulativeStrikeRate(df,name="A Leg Glance"):
     plt.xticks(rotation=70)
     atitle = name +  "-Cumulative Average Strike Rate vs matches"
     plt.title(atitle,fontsize=8) 
-    plt.show()
+    if(plot==True):
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
     plt.gcf().clear()
     return
 
@@ -3561,7 +3845,7 @@ def batsmanCumulativeStrikeRate(df,name="A Leg Glance"):
 # 
 #
 ###########################################################################################  
-def batsmanRunsAgainstOpposition(df,name= "A Leg Glance"):
+def batsmanRunsAgainstOpposition(df,name= "A Leg Glance",plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Description
 
@@ -3576,6 +3860,14 @@ def batsmanRunsAgainstOpposition(df,name= "A Leg Glance"):
     Data frame
     name	
     Name of batsman
+    plot	
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None
@@ -3619,7 +3911,11 @@ def batsmanRunsAgainstOpposition(df,name= "A Leg Glance"):
     plt.ylabel('Mean Runs',fontsize=8)
     atitle=name + "-Mean Runs against opposition"
     plt.title(atitle,fontsize=8)
-    plt.show()
+    if(plot==True):
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
     plt.gcf().clear()
     return
 
@@ -3631,7 +3927,7 @@ def batsmanRunsAgainstOpposition(df,name= "A Leg Glance"):
 # 
 #
 ###########################################################################################  
-def batsmanRunsVenue(df,name= "A Leg Glance"):
+def batsmanRunsVenue(df,name= "A Leg Glance",plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Description
     
@@ -3646,6 +3942,13 @@ def batsmanRunsVenue(df,name= "A Leg Glance"):
     Data frame
     name	
     Name of batsman
+    plot	
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
     Value
     
     None
@@ -3690,7 +3993,11 @@ def batsmanRunsVenue(df,name= "A Leg Glance"):
     plt.ylabel('Mean Runs',fontsize=8)
     atitle=name + "-Mean Runs at venues"
     plt.title(atitle,fontsize=8)
-    plt.show()
+    if(plot==True):
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
     plt.gcf().clear()
     return
     
@@ -3731,7 +4038,7 @@ def teamBowlingPerDetails(team):
 # 
 #
 ###########################################################################################  
-def getTeamBowlingDetails (team,dir=".",save=False):
+def getTeamBowlingDetails (team,dir=".",save=False,odir="."):
     '''
     Description
     
@@ -3808,7 +4115,8 @@ def getTeamBowlingDetails (team,dir=".",save=False):
               pass # The team did not bowl
     if save==True:
          fileName = "./" + team + "-BowlingDetails.csv"
-         details.to_csv(fileName,index=False)
+         output=os.path.join(odir,fileName)
+         details.to_csv(output,index=False)
               
     return(details)
     
@@ -3881,7 +4189,7 @@ def getBowlerWicketDetails (team, name,dir="."):
 # 
 #
 ###########################################################################################  
-def bowlerMeanEconomyRate(df,name="A Leg Glance"):
+def bowlerMeanEconomyRate(df,name="A Leg Glance",plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Description
     
@@ -3896,6 +4204,14 @@ def bowlerMeanEconomyRate(df,name="A Leg Glance"):
     Data frame
     name	
     Name of bowler
+    plot	
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None
@@ -3936,7 +4252,11 @@ def bowlerMeanEconomyRate(df,name="A Leg Glance"):
     sns.barplot(x='overs',y='econrate',data=df2)
     atitle = name +  "-Mean economy rate vs overs"
     plt.title(atitle,fontsize=8)
-    plt.show()
+    if(plot==True):
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
     plt.gcf().clear()
     return
 
@@ -3948,7 +4268,7 @@ def bowlerMeanEconomyRate(df,name="A Leg Glance"):
 # 
 #
 ###########################################################################################  
-def bowlerMeanRunsConceded (df,name="A Leg Glance"):
+def bowlerMeanRunsConceded (df,name="A Leg Glance",plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Description
     
@@ -3963,6 +4283,14 @@ def bowlerMeanRunsConceded (df,name="A Leg Glance"):
     Data frame
     name	
     Name of bowler
+    plot	
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None
@@ -4003,7 +4331,11 @@ def bowlerMeanRunsConceded (df,name="A Leg Glance"):
     sns.barplot(x='overs',y='runs',data=df2)
     atitle = name +  "-Mean runs conceded vs overs"
     plt.title(atitle,fontsize=8)
-    plt.show()
+    if(plot==True):
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
     plt.gcf().clear()
     return
 
@@ -4015,7 +4347,7 @@ def bowlerMeanRunsConceded (df,name="A Leg Glance"):
 # 
 #
 ###########################################################################################  
-def bowlerMovingAverage (df, name):
+def bowlerMovingAverage (df, name,plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Description
     
@@ -4030,6 +4362,14 @@ def bowlerMovingAverage (df, name):
     Data frame
     name	
     Name of bowler
+    plot	
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None
@@ -4070,7 +4410,11 @@ def bowlerMovingAverage (df, name):
     plt.xticks(rotation=70)
     atitle = name +  "-Moving average of wickets"
     plt.title(atitle,fontsize=8)
-    plt.show()
+    if(plot==True):
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
     plt.gcf().clear()
     return
 
@@ -4082,7 +4426,7 @@ def bowlerMovingAverage (df, name):
 # 
 #
 ###########################################################################################  
-def bowlerCumulativeAvgWickets(df,name="A Leg Glance"):
+def bowlerCumulativeAvgWickets(df,name="A Leg Glance",plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Description
     
@@ -4097,6 +4441,14 @@ def bowlerCumulativeAvgWickets(df,name="A Leg Glance"):
     Data frame
     name	
     Name of batsman
+    plot	
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None
@@ -4135,7 +4487,11 @@ def bowlerCumulativeAvgWickets(df,name="A Leg Glance"):
     plt.xticks(rotation=90)
     atitle = name +  "-Cumulative Average wickets vs matches"
     plt.title(atitle,fontsize=8)
-    plt.show()
+    if(plot==True):
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
     plt.gcf().clear()
     return
 
@@ -4147,7 +4503,7 @@ def bowlerCumulativeAvgWickets(df,name="A Leg Glance"):
 # 
 #
 ###########################################################################################  
-def bowlerCumulativeAvgEconRate(df,name="A Leg Glance"):
+def bowlerCumulativeAvgEconRate(df,name="A Leg Glance",plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Description
     
@@ -4162,6 +4518,13 @@ def bowlerCumulativeAvgEconRate(df,name="A Leg Glance"):
     Data frame
     name	
     Name of batsman
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None
@@ -4198,7 +4561,11 @@ def bowlerCumulativeAvgEconRate(df,name="A Leg Glance"):
     plt.xticks(rotation=70)
     atitle = name +  "-Cumulative Average economy rate vs matches"
     plt.title(atitle,fontsize=8)
-    plt.show()
+    if(plot==True):
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
     plt.gcf().clear()
     return
 
@@ -4210,7 +4577,7 @@ def bowlerCumulativeAvgEconRate(df,name="A Leg Glance"):
 # 
 #
 ###########################################################################################  
-def bowlerWicketPlot (df,name="A Leg Glance"):
+def bowlerWicketPlot (df,name="A Leg Glance",plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Description
     
@@ -4225,6 +4592,15 @@ def bowlerWicketPlot (df,name="A Leg Glance"):
     Data frame
     name	
     Name of bowler
+    plot	
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
+
     Value
     
     None
@@ -4264,7 +4640,11 @@ def bowlerWicketPlot (df,name="A Leg Glance"):
     sns.barplot(x='overs',y='wicket',data=df2)
     atitle = name +  "-Mean wickets vs overs"
     plt.title(atitle,fontsize=8)
-    plt.show()
+    if(plot==True):
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
     plt.gcf().clear()
     return
 
@@ -4276,7 +4656,7 @@ def bowlerWicketPlot (df,name="A Leg Glance"):
 # 
 #
 ###########################################################################################  
-def bowlerWicketsAgainstOpposition (df,name= "A Leg Glance"):
+def bowlerWicketsAgainstOpposition (df,name= "A Leg Glance", plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Description
     
@@ -4291,6 +4671,14 @@ def bowlerWicketsAgainstOpposition (df,name= "A Leg Glance"):
     Data frame
     name	
     Name of bowler
+    plot	
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None
@@ -4333,7 +4721,11 @@ def bowlerWicketsAgainstOpposition (df,name= "A Leg Glance"):
     plt.ylabel('Mean wickets',fontsize=8)
     atitle=name + "-Mean wickets against opposition"
     plt.title(atitle,fontsize=8)
-    plt.show()
+    if(plot==True):
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
     plt.gcf().clear()
     return
 
@@ -4345,7 +4737,7 @@ def bowlerWicketsAgainstOpposition (df,name= "A Leg Glance"):
 # 
 #
 ########################################################################################### 
-def bowlerWicketsVenue (df,name= "A Leg Glance"):
+def bowlerWicketsVenue (df,name= "A Leg Glance",plot=True, savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Bowler performance at different venues
     
@@ -4362,6 +4754,14 @@ def bowlerWicketsVenue (df,name= "A Leg Glance"):
     Data frame
     name	
     Name of bowler
+    plot	
+    If plot=TRUE then a plot is created otherwise a data frame is returned
+    savePic
+    If savePic = True then the plot is saved
+    dir1
+    The directory where the plot is saved
+    picFile
+    The name of the savefile
     Value
     
     None
@@ -4405,7 +4805,11 @@ def bowlerWicketsVenue (df,name= "A Leg Glance"):
     plt.ylabel('Mean wickets',fontsize=8)
     atitle=name + "-Mean wickets at different venues"
     plt.title(atitle,fontsize=8)  
-    plt.show()
+    if(plot==True):
+        if(savePic):
+            plt.savefig(os.path.join(dir1,picFile),bbox_inches='tight')
+        else:
+            plt.show()
     plt.gcf().clear()
     return
 
@@ -4418,7 +4822,7 @@ def bowlerWicketsVenue (df,name= "A Leg Glance"):
 #
 ###########################################################################################
 
-def saveAllMatchesBetween2IntlT20s(dir1):  
+def saveAllMatchesBetween2IntlT20s(dir1,odir="."):  
     '''
     Saves all matches between 2 IPL teams as dataframe
     Description
@@ -4464,7 +4868,7 @@ def saveAllMatchesBetween2IntlT20s(dir1):
         for team2 in teams:
             if team1 != team2:
                 print("Team1=",team1,"team2=", team2)
-                getAllMatchesBetweenTeams(team1,team2,dir=dir1,save=True)
+                getAllMatchesBetweenTeams(team1,team2,dir=dir1,save=True,odir=odir)
                 time.sleep(2) #Sleep before  next save   
                 
     return    
@@ -4479,7 +4883,7 @@ def saveAllMatchesBetween2IntlT20s(dir1):
 # This function saves all the matches between all Intl T20 teams
 #
 ########################################################################################### 
-def saveAllMatchesAllOppositionIntlT20(dir1):  
+def saveAllMatchesAllOppositionIntlT20(dir1,odir="."):  
     '''
     Saves matches against all Intl T20 teams as dataframe and CSV for an IPL team
     
@@ -4525,7 +4929,7 @@ def saveAllMatchesAllOppositionIntlT20(dir1):
     
     for team in teams:
                 print("Team=",team)
-                getAllMatchesAllOpposition(team,dir=dir1,save=True)
+                getAllMatchesAllOpposition(team,dir=dir1,save=True,odir=odir)
                 time.sleep(2) #Sleep before  next save
                    
 
@@ -4783,7 +5187,7 @@ def rankIntlT20Batting(dir1):
     df=pd.DataFrame()
     for key in countries:
         val = countries[key] + "_details"
-        val= getTeamBattingDetails(key,dir=dir1, save=False)
+        val= getTeamBattingDetails(key,dir=dir1, save=False,odir=".")
         df = pd.concat([df,val])
     df1=df.groupby('batsman').agg(['count','mean'])
     df1.columns = ['_'.join(col).strip() for col in df1.columns.values]
@@ -4815,7 +5219,7 @@ def rankIntlT20Bowling(dir1):
     df=pd.DataFrame()
     for key in countries:
         val = countries[key] + "_details"
-        val= getTeamBowlingDetails(key,dir=dir1, save=False)
+        val= getTeamBowlingDetails(key,dir=dir1, save=False,odir=".")
         df = pd.concat([df,val])
     df1=df.groupby('bowler').agg(['count','mean'])
     df1.columns = ['_'.join(col).strip() for col in df1.columns.values]
@@ -4844,7 +5248,7 @@ def rankIPLT20Batting(dir1):
     df=pd.DataFrame()
     for key in iplTeams:
         val = iplTeams[key] + "_details"
-        val= getTeamBattingDetails(key,dir=dir1, save=False)
+        val= getTeamBattingDetails(key,dir=dir1, save=False,odir=".")
         df = pd.concat([df,val])
     df1=df.groupby('batsman').agg(['count','mean'])
     df1.columns = ['_'.join(col).strip() for col in df1.columns.values]
@@ -4872,7 +5276,7 @@ def rankIPLT20Bowling(dir1):
     df=pd.DataFrame()
     for key in iplTeams:
         val = iplTeams[key] + "_details"
-        val= getTeamBowlingDetails(key,dir=dir1, save=False)
+        val= getTeamBowlingDetails(key,dir=dir1, save=False,odir=".")
         df = pd.concat([df,val])
     df1=df.groupby('bowler').agg(['count','mean'])
     df1.columns = ['_'.join(col).strip() for col in df1.columns.values]
@@ -4901,7 +5305,7 @@ def rankNTBT20Batting(dir1):
     df=pd.DataFrame()
     for key in ntbTeams:
         val = ntbTeams[key] + "_details"
-        val= getTeamBattingDetails(key,dir=dir1, save=False)
+        val= getTeamBattingDetails(key,dir=dir1, save=False,odir=".")
         df = pd.concat([df,val])
         
     df1=df.groupby('batsman').agg(['count','mean'])
@@ -4930,7 +5334,7 @@ def rankNTBT20Bowling(dir1):
     df=pd.DataFrame()
     for key in ntbTeams:
         val = ntbTeams[key] + "_details"
-        val= getTeamBowlingDetails(key,dir=dir1, save=False)
+        val= getTeamBowlingDetails(key,dir=dir1, save=False,odir=".")
         df = pd.concat([df,val])
     df1=df.groupby('bowler').agg(['count','mean'])
     df1.columns = ['_'.join(col).strip() for col in df1.columns.values]
@@ -4958,7 +5362,7 @@ def rankBBLT20Batting(dir1):
     df=pd.DataFrame()
     for key in bbTteams:
         val = bbTteams[key] + "_details"
-        val= getTeamBattingDetails(key,dir=dir1, save=False)
+        val= getTeamBattingDetails(key,dir=dir1, save=False,odir=".")
         df = pd.concat([df,val])
         
     df1=df.groupby('batsman').agg(['count','mean'])
@@ -4985,7 +5389,7 @@ def rankBBLT20Bowling(dir1):
     df=pd.DataFrame()
     for key in bbTteams:
         val = bbTteams[key] + "_details"
-        val= getTeamBowlingDetails(key,dir=dir1, save=False)
+        val= getTeamBowlingDetails(key,dir=dir1, save=False,odir=".")
         df = pd.concat([df,val])
     df1=df.groupby('bowler').agg(['count','mean'])
     df1.columns = ['_'.join(col).strip() for col in df1.columns.values]
