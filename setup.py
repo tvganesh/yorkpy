@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="yorkpy",
-    version="0.0.10",
+    version="0.0.11",
     author="Tinniam V Ganesh",
     author_email="tvganesh.85@gmail.com",
     description="Analyze T20 matches based on data from Cricsheet-http://cricsheet.org",

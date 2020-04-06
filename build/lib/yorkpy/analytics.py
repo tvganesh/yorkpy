@@ -1445,7 +1445,7 @@ def teamBatsmenPartnershiOppnAllMatches(matches,theTeam,report="summary",top=5):
 #
 ###########################################################################################       
     
-def teamBatsmenPartnershipOppnAllMatchesChart(matches,main,opposition,plot=True,top=5,partnershipRuns=20,avePic=False, dir1=".",picFile="pic1.png"):
+def teamBatsmenPartnershipOppnAllMatchesChart(matches,main,opposition,plot=True,top=5,partnershipRuns=20,savePic=False, dir1=".",picFile="pic1.png"):
     '''
     Plot of team partnership in all IPL matches against an opposition
     
